@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Herlytics</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div class="page-container">
+
+  <div class="page-hero">
+    <div>
+      <h2>Hello, Demo User 👋</h2>
+      <p>Here's what your body is telling you today.</p>
+    </div>
+    <a href="#" class="btn-secondary">View insights →</a>
+  </div>
+
+  <!-- Flip cards -->
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:18px;">
+
+    <div class="flip-card">
+      <div class="flip-card-inner">
+        <div class="flip-card-front">
+          <div class="flip-icon">📅</div>
+          <div>
+            <div class="flip-title">Next period</div>
+            <div class="flip-value" style="font-size:20px;">12 Apr</div>
+          </div>
+        </div>
+        <div class="flip-card-back">
+          <div class="flip-back-title">Next period</div>
+          <div class="flip-back-text">
+            Based on a typical 28-day cycle (demo data).
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="flip-card">
+      <div class="flip-card-inner">
+        <div class="flip-card-front">
+          <div class="flip-icon">🌱</div>
+          <div>
+            <div class="flip-title">Current phase</div>
+            <div class="flip-value" style="font-size:22px;">Follicular</div>
+          </div>
+        </div>
+        <div class="flip-card-back">
+          <div class="flip-back-title">Follicular phase</div>
+          <div class="flip-back-text">Estrogen rising</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="flip-card">
+      <div class="flip-card-inner">
+        <div class="flip-card-front">
+          <div class="flip-icon">📊</div>
+          <div>
+            <div class="flip-title">Cycle length</div>
+            <div class="flip-value">28 <span style="font-size:18px;">days</span></div>
+          </div>
+        </div>
+        <div class="flip-card-back">
+          <div class="flip-back-title">Cycle analysis</div>
+          <div class="flip-back-text">
+            Within normal range (demo).
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Calendar -->
+  <div class="card">
+    <div class="calendar-header">
+      <button class="cal-nav" id="prevMonth">‹</button>
+      <h3 id="calMonthLabel">Loading...</h3>
+      <button class="cal-nav" id="nextMonth">›</button>
+    </div>
+
+    <div class="calendar-grid" id="calDayNames"></div>
+    <div class="calendar-grid" id="calGrid"></div>
+  </div>
+
+  <!-- Form -->
+  <div class="card">
+    <div class="card-title">Log a period</div>
+
+    <form id="logForm">
+      <input type="date" required />
+      <button class="btn-primary">Save log +</button>
+    </form>
+  </div>
+
+</div>
+
+<script>
+// Mock calendar
+const periodDates = [new Date().toDateString()];
+const predictedNext = new Date().toDateString();
+
+let currentDate = new Date();
+
+function renderCalendar(date) {
+  const month = date.toLocaleDateString('en-IN',{month:'long',year:'numeric'});
+  document.getElementById('calMonthLabel').textContent = month;
+
+  const days = Array.from({length:30}, (_,i)=>`<div class="cal-day">${i+1}</div>`).join('');
+  document.getElementById('calGrid').innerHTML = days;
+}
+
+renderCalendar(currentDate);
+
+// Form mock
+document.getElementById("logForm").addEventListener("submit",(e)=>{
+  e.preventDefault();
+  alert("Demo saved");
+});
+</script>
+
+</body>
+</html>
