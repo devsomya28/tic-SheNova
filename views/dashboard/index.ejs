@@ -5,360 +5,69 @@
   <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
+
 <div class="app-layout">
   <%- include('../partials/sidebar', { activePage: 'dashboard' }) %>
 
   <main class="main-content">
-    <% if (locals.flash) { %>
-    <div class="alert alert-<%= flash.type %>"><%= flash.message %></div>
-    <% } %>
 
     <!-- Greeting -->
     <div style="margin-bottom:1.75rem;">
-      <h1 style="font-family:var(--font-display);font-size:1.8rem;color:var(--text);">
-        Good <%= new Date().getHours() < 12 ? 'morning' : new Date().getHours() < 18 ? 'afternoon' : 'evening' %>,
-        <%= user.name.split(' ')[0] %> 🌸
+      <h1>
+        Good <%= (new Date().getHours() < 12) ? 'morning' : (new Date().getHours() < 18 ? 'afternoon' : 'evening') %>,
+        <%= user?.name ? user.name.split(' ')[0] : 'User' %> 🌸
       </h1>
+
       <p class="text-muted text-sm">
-        <%= new Date().toLocaleDateString('en-IN', {weekday:'long', day:'numeric', month:'long', year:'numeric'}) %>
+        <%= new Date().toLocaleDateString('en-IN', { weekday:'long', day:'numeric', month:'long', year:'numeric' }) %>
       </p>
     </div>
 
-    <!-- Journal Banner: Who are you tracking for? -->
-    <div class="journal-banner fade-up">
-      <div class="journal-banner-text">
-        <strong>💜 Who are you tracking for today?</strong>
-        <div class="journal-options" id="journalOptions">
-          <button class="journal-option <%= user.trackingFor === 'myself' ? 'selected' : '' %>"
-                  onclick="setTracking('myself', this)">🌸 Myself</button>
-          <button class="journal-option <%= user.trackingFor === 'someone_i_love' ? 'selected' : '' %>"
-                  onclick="setTracking('someone_i_love', this)">💕 Someone I love</button>
-          <button class="journal-option <%= user.trackingFor === 'family_member' ? 'selected' : '' %>"
-                  onclick="setTracking('family_member', this)">👨‍👩‍👧 A family member</button>
-        </div>
-      </div>
+    <!-- Risk Score -->
+    <div>
+      <h2>PCOS Risk Score</h2>
+      <p><%= user?.riskScore ?? 0 %></p>
+      <span><%= user?.riskLevel || 'low' %> risk</span>
     </div>
 
-    <!-- Risk Score + Phase Banner -->
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.5rem;">
+    <!-- Cycle Stats -->
+    <% if (cycleStats && cycleStats.phase) { %>
+      <div>
+        <h3><%= cycleStats.phase.name %> Phase</h3>
+        <p>Day <%= cycleStats.dayOfCycle || 0 %></p>
+      </div>
+    <% } else { %>
+      <p>No cycle data yet.</p>
+    <% } %>
 
-      <!-- Risk Score Card -->
-      <div class="card fade-up" style="background:linear-gradient(135deg,var(--lav-500),var(--lav-800));color:white;border:none;">
-        <div class="flex justify-between items-center mb-2">
-          <div>
-            <div style="font-size:0.78rem;opacity:0.8;text-transform:uppercase;letter-spacing:0.06em;font-weight:600;">PCOS Risk Score</div>
-            <div style="font-family:var(--font-display);font-size:3rem;font-weight:700;line-height:1;margin:0.25rem 0;"><%= user.riskScore || 0 %></div>
-            <span style="background:rgba(255,255,255,0.2);padding:0.25rem 0.75rem;border-radius:99px;font-size:0.78rem;font-weight:600;text-transform:capitalize;">
-              <%= user.riskLevel || 'low' %> risk
-            </span>
-          </div>
-          <div style="font-size:3rem;opacity:0.3;">🔬</div>
-        </div>
-        <div style="margin-top:1rem;background:rgba(255,255,255,0.2);border-radius:99px;height:6px;">
-          <div style="height:100%;border-radius:99px;background:white;width:<%= user.riskScore || 0 %>%;transition:width 1s ease;"></div>
-        </div>
-        <div class="flex justify-between text-sm mt-1" style="opacity:0.75;">
-          <span>Low</span><span>Moderate</span><span>High</span>
-        </div>
-      </div>
-
-      <!-- Current Phase Card -->
-      <% if (cycleStats) { %>
-      <div class="card fade-up fade-up-2" style="border-color:var(--lav-200);">
-        <div class="card-header" style="margin-bottom:0.75rem;">
-          <div>
-            <div class="card-title"><%= cycleStats.phase.emoji %> <%= cycleStats.phase.name %> Phase</div>
-            <div class="card-subtitle">Day <%= cycleStats.dayOfCycle %> of your cycle</div>
-          </div>
-          <span class="phase-pill"><%= cycleStats.phase.name %></span>
-        </div>
-        <p style="font-size:0.88rem;color:var(--text-muted);margin-bottom:0.75rem;"><%= cycleStats.phase.tip %></p>
-        <div style="font-size:0.8rem;color:var(--text-muted);">
-          ⏭ Next period: <strong style="color:var(--lav-700);">
-          <%= cycleStats.daysUntilNext > 0 ? 'in ' + cycleStats.daysUntilNext + ' days' : 'Today / overdue' %>
-          </strong>
-        </div>
-      </div>
-      <% } else { %>
-      <div class="card fade-up fade-up-2" style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;min-height:160px;">
-        <div style="font-size:2rem;margin-bottom:0.75rem;">🌙</div>
-        <p class="text-muted text-sm" style="margin-bottom:1rem;">No cycle data yet. Log your first period to see your phase.</p>
-        <a href="/insights/cycle" class="btn btn-primary btn-sm">Log Cycle →</a>
-      </div>
-      <% } %>
+    <!-- Logs -->
+    <div>
+      <p>Total Logs: <%= cycleLogs?.length || 0 %></p>
     </div>
 
-    <!-- Stat flip cards -->
-    <div class="flip-card-grid mb-3 fade-up fade-up-3">
-      <div class="flip-card">
-        <div class="flip-card-inner">
-          <div class="flip-front">
-            <span class="flip-icon">📅</span>
-            <div class="flip-label">Avg Cycle Length</div>
-            <div class="flip-hint">Click to see details</div>
-          </div>
-          <div class="flip-back">
-            <div class="flip-back-title">Cycle Length</div>
-            <div class="flip-back-value"><%= cycleStats ? cycleStats.avg : '—' %> <span style="font-size:0.9rem;">days</span></div>
-            <div class="flip-back-sub"><%= cycleStats ? (cycleStats.isIrregular ? '⚠️ Irregular' : '✅ Regular') : 'Log cycles to track' %></div>
-          </div>
-        </div>
-      </div>
-      <div class="flip-card">
-        <div class="flip-card-inner">
-          <div class="flip-front">
-            <span class="flip-icon">💧</span>
-            <div class="flip-label">Water Today</div>
-            <div class="flip-hint">Click to see details</div>
-          </div>
-          <div class="flip-back">
-            <div class="flip-back-title">Hydration</div>
-            <div class="flip-back-value"><%= todayNutrition ? todayNutrition.waterGlasses : 0 %> <span style="font-size:0.9rem;">glasses</span></div>
-            <div class="flip-back-sub">Goal: 8 glasses/day</div>
-          </div>
-        </div>
-      </div>
-      <div class="flip-card">
-        <div class="flip-card-inner">
-          <div class="flip-front">
-            <span class="flip-icon">🗓️</span>
-            <div class="flip-label">Logs This Month</div>
-            <div class="flip-hint">Click to see details</div>
-          </div>
-          <div class="flip-back">
-            <div class="flip-back-title">Cycle Entries</div>
-            <div class="flip-back-value"><%= cycleLogs.length %></div>
-            <div class="flip-back-sub">Keep logging for better insights</div>
-          </div>
-        </div>
-      </div>
-      <div class="flip-card">
-        <div class="flip-card-inner">
-          <div class="flip-front">
-            <span class="flip-icon">🥗</span>
-            <div class="flip-label">Calories Today</div>
-            <div class="flip-hint">Click to see details</div>
-          </div>
-          <div class="flip-back">
-            <div class="flip-back-title">Nutrition</div>
-            <div class="flip-back-value"><%= todayNutrition ? todayNutrition.totalCalories : 0 %></div>
-            <div class="flip-back-sub">Goal: ~1800 kcal/day</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Period Calendar + Chart -->
-    <div class="grid-2 mb-3 fade-up fade-up-4">
-
-      <!-- Period Calendar -->
-      <div class="card period-calendar">
-        <div class="cal-header">
-          <div class="card-title">🌸 Period Calendar</div>
-          <div class="cal-nav">
-            <button class="cal-nav-btn" onclick="changeMonth(-1)">‹</button>
-            <span id="calMonthLabel" style="font-size:0.85rem;font-weight:600;color:var(--lav-700);padding:0 0.4rem;"></span>
-            <button class="cal-nav-btn" onclick="changeMonth(1)">›</button>
-          </div>
-        </div>
-        <div class="cal-grid" id="calGrid"></div>
-        <div class="cal-legend">
-          <div class="cal-legend-item"><div class="cal-legend-dot" style="background:#be185d;"></div> Period</div>
-          <div class="cal-legend-item"><div class="cal-legend-dot" style="background:var(--lav-400);"></div> Fertile</div>
-          <div class="cal-legend-item"><div class="cal-legend-dot" style="background:var(--lav-600);"></div> Today</div>
-        </div>
-        <div style="margin-top:0.75rem;">
-          <button class="btn btn-primary btn-sm btn-block" onclick="markPeriodToday()">+ Mark Today as Period</button>
-        </div>
-      </div>
-
-      <!-- Pain / Energy Chart -->
-      <div class="card">
-        <div class="card-header">
-          <div>
-            <div class="card-title">Recent Cycle Data</div>
-            <div class="card-subtitle">Pain & energy levels from logged entries</div>
-          </div>
-        </div>
-        <div class="chart-wrap">
-          <canvas id="cycleChart"></canvas>
-        </div>
-      </div>
+    <!-- Nutrition -->
+    <div>
+      <p>Calories Today: <%= todayNutrition?.totalCalories || 0 %></p>
+      <p>Water: <%= todayNutrition?.waterGlasses || 0 %> glasses</p>
     </div>
 
     <!-- Risk Flags -->
-    <div class="card mb-3 fade-up">
-      <div class="card-header">
-        <div class="card-title">⚠️ Risk Flags</div>
-        <a href="/insights/results" class="btn btn-outline btn-sm">Full Report</a>
-      </div>
-      <% if (user.riskFlags && user.riskFlags.length > 0) { %>
-        <% user.riskFlags.forEach(flag => { %>
-        <div style="display:flex;align-items:center;gap:0.65rem;padding:0.6rem 0;border-bottom:1px solid var(--border);">
-          <span style="color:var(--rose);font-size:1rem;">⚑</span>
-          <span style="font-size:0.88rem;"><%= flag %></span>
-        </div>
-        <% }) %>
+    <div>
+      <h3>Risk Flags</h3>
+
+      <% if (user?.riskFlags && user.riskFlags.length > 0) { %>
+        <ul>
+          <% user.riskFlags.forEach(flag => { %>
+            <li><%= flag %></li>
+          <% }) %>
+        </ul>
       <% } else { %>
-      <div class="empty-state">
-        <div class="empty-icon">✅</div>
-        <p>No significant risk flags detected.</p>
-      </div>
+        <p>No risk flags</p>
       <% } %>
     </div>
 
-    <!-- Phase food tips -->
-    <% if (cycleStats) { %>
-    <div class="card fade-up">
-      <div class="card-header">
-        <div class="card-title">🥗 <%= cycleStats.phase.name %> Phase — Nutrition Guide</div>
-      </div>
-      <div class="grid-2">
-        <div>
-          <div class="text-sm fw-600 mb-1" style="color:var(--green);">✅ Eat more</div>
-          <div style="display:flex;flex-wrap:wrap;gap:0.4rem;">
-            <% (cycleStats.phase.foods || []).forEach(f => { %>
-            <span class="tag"><%= f %></span>
-            <% }) %>
-          </div>
-        </div>
-        <div>
-          <div class="text-sm fw-600 mb-1" style="color:var(--rose);">⚠️ Limit</div>
-          <div style="display:flex;flex-wrap:wrap;gap:0.4rem;">
-            <% (cycleStats.phase.avoid || []).forEach(f => { %>
-            <span class="tag" style="background:var(--rose-light);color:#be185d;"><%= f %></span>
-            <% }) %>
-          </div>
-        </div>
-      </div>
-      <div style="margin-top:1rem;padding:0.75rem;background:var(--lav-50);border-radius:var(--radius-sm);">
-        <span class="text-sm fw-600" style="color:var(--lav-600);">⚡ Energy: </span>
-        <span class="text-sm text-muted"><%= cycleStats.phase.energy %></span>
-      </div>
-    </div>
-    <% } %>
-
-    <!-- Quick Actions -->
-    <div style="margin-top:1.5rem;display:flex;gap:0.75rem;flex-wrap:wrap;">
-      <a href="/insights/cycle" class="btn btn-primary">➕ Log Period</a>
-      <a href="/insights/nutrition" class="btn btn-outline">🥗 Log Meal</a>
-      <a href="/insights/results" class="btn btn-outline">📊 My Results</a>
-      <a href="/doctor/share" class="btn btn-outline">👩‍⚕️ Doctor Summary</a>
-    </div>
   </main>
 </div>
-
-<script>
-// ── JOURNAL / TRACKING FOR ──
-function setTracking(value, el) {
-  document.querySelectorAll('.journal-option').forEach(b => b.classList.remove('selected'));
-  el.classList.add('selected');
-  fetch('/api/tracking-for', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ trackingFor: value })
-  }).catch(() => {});
-}
-
-// ── PERIOD CALENDAR ──
-(function() {
-  const periodDates = <%- JSON.stringify((cycleLogs || []).map(l => new Date(l.periodStartDate).toDateString())) %>;
-  let currentDate = new Date();
-
-  function renderCalendar() {
-    const year = currentDate.getFullYear();
-    const month = currentDate.getMonth();
-    const today = new Date();
-    const firstDay = new Date(year, month, 1).getDay();
-    const daysInMonth = new Date(year, month + 1, 0).getDate();
-    const monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-
-    document.getElementById('calMonthLabel').textContent = monthNames[month] + ' ' + year;
-
-    const grid = document.getElementById('calGrid');
-    const days = ['Su','Mo','Tu','We','Th','Fr','Sa'];
-    let html = days.map(d => `<div class="cal-day-label">${d}</div>`).join('');
-
-    for (let i = 0; i < firstDay; i++) html += `<div class="cal-day empty"></div>`;
-
-    for (let d = 1; d <= daysInMonth; d++) {
-      const date = new Date(year, month, d);
-      const isToday = date.toDateString() === today.toDateString();
-      const isPeriod = periodDates.includes(date.toDateString());
-      // simple fertile window: days 10-17 of current month (approximate)
-      const isFertile = !isPeriod && d >= 10 && d <= 17 && month === today.getMonth() && year === today.getFullYear();
-      let cls = 'cal-day';
-      if (isToday) cls += ' today';
-      else if (isPeriod) cls += ' period';
-      else if (isFertile) cls += ' fertile';
-      html += `<div class="${cls}" title="${date.toDateString()}">${d}</div>`;
-    }
-    grid.innerHTML = html;
-  }
-
-  window.changeMonth = function(dir) {
-    currentDate.setMonth(currentDate.getMonth() + dir);
-    renderCalendar();
-  };
-
-  window.markPeriodToday = function() {
-    const today = new Date().toDateString();
-    if (!periodDates.includes(today)) {
-      periodDates.push(today);
-      renderCalendar();
-    }
-    // Redirect to log cycle form
-    window.location.href = '/insights/cycle';
-  };
-
-  renderCalendar();
-})();
-
-// ── CYCLE CHART ──
-(function() {
-  const ctx = document.getElementById('cycleChart');
-  if (!ctx) return;
-  const logs = <%- JSON.stringify(recentLogs.map(l => ({
-    date: new Date(l.periodStartDate).toLocaleDateString('en-IN',{day:'numeric',month:'short'}),
-    pain: l.painLevel||0,
-    energy: l.energyLevel||5
-  })).reverse()) %>;
-  if (!logs.length) {
-    ctx.parentElement.innerHTML = '<div class="empty-state"><div class="empty-icon">📊</div><p>Log cycle entries to see your chart</p></div>';
-    return;
-  }
-  new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels: logs.map(l => l.date),
-      datasets: [
-        {
-          label: 'Pain Level',
-          data: logs.map(l => l.pain),
-          borderColor: '#f472b6',
-          backgroundColor: 'rgba(244,114,182,0.08)',
-          tension: 0.4, pointRadius: 4
-        },
-        {
-          label: 'Energy Level',
-          data: logs.map(l => l.energy),
-          borderColor: '#8b5cf6',
-          backgroundColor: 'rgba(139,92,246,0.08)',
-          tension: 0.4, pointRadius: 4
-        }
-      ]
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { position: 'bottom', labels: { font: { family: 'DM Sans' }, boxWidth: 12 } } },
-      scales: {
-        y: { min: 0, max: 10, grid: { color: '#ede5ff' }, ticks: { font: { family: 'DM Sans' } } },
-        x: { grid: { display: false }, ticks: { font: { family: 'DM Sans' } } }
-      }
-    }
-  });
-})();
-</script>
 
 </body>
 </html>

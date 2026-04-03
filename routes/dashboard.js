@@ -10,27 +10,53 @@ function requireLogin(req, res, next) {
 }
 
 router.get('/', requireLogin, async (req, res) => {
-  const user = await User.findById(req.session.user.id);
-  const logs = await CycleLog.find({ userId: user._id }).sort({ periodStartDate: -1 });
+  try {
+    const user = await User.findById(req.session.user.id);
 
-  const dates = logs.map(l => l.periodStartDate);
-  const stats = getCycleStats(dates);
+    const cycleLogs = await CycleLog.find({ userId: user._id }).sort({ periodStartDate: -1 });
 
-  res.render('dashboard', { user, stats, logs });
+    const dates = cycleLogs.map(l => l.periodStartDate);
+    const cycleStats = getCycleStats(dates);
+
+    // Dummy / optional data (prevents EJS crashes)
+    const todayNutrition = {};
+    const recentLogs = cycleLogs.slice(0, 10);
+
+    res.render('dashboard', {
+      user: user || {},
+      cycleStats: cycleStats || null,
+      cycleLogs: cycleLogs || [],
+      todayNutrition: todayNutrition,
+      recentLogs: recentLogs
+    });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Dashboard error");
+  }
 });
+
 
 // Log a new period
 router.post('/log', requireLogin, async (req, res) => {
-  const { periodStartDate, flowLevel, hasClots, mood, symptoms } = req.body;
-  await CycleLog.create({
-    userId: req.session.user.id,
-    periodStartDate: new Date(periodStartDate),
-    flowLevel,
-    hasClots: hasClots === 'on',
-    mood,
-    symptoms: [].concat(symptoms || [])
-  });
-  res.redirect('/dashboard');
+  try {
+    const { periodStartDate, flowLevel, hasClots, mood, symptoms } = req.body;
+
+    await CycleLog.create({
+      userId: req.session.user.id,
+      periodStartDate: new Date(periodStartDate),
+      flowLevel,
+      hasClots: hasClots === 'on',
+      mood,
+      symptoms: [].concat(symptoms || [])
+    });
+
+    res.redirect('/dashboard');
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error saving log");
+  }
 });
 
 module.exports = router;
