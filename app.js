@@ -1,5 +1,4 @@
 require('dotenv').config();
-
 const express = require('express');
 const mongoose = require('mongoose');
 const session = require('express-session');
@@ -7,84 +6,62 @@ const path = require('path');
 
 const app = express();
 
-
-// =======================
-// 🔌 DATABASE CONNECTION
-// =======================
+// Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log('✅ MongoDB connected'))
-  .catch(err => console.log('❌ Mongo error:', err));
+  .then(() => console.log('MongoDB connected'))
+  .catch(err => console.log(err));
 
-
-// =======================
-// ⚙️ MIDDLEWARE
-// =======================
-
-// EJS setup
+// Middleware
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
-
-// Static files (CSS, JS)
 app.use(express.static(path.join(__dirname, 'public')));
-
-// Body parsing
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-// Session (hackathon-friendly)
+// Session (stored in memory - perfect for hackathon)
 app.use(session({
-  secret: process.env.SESSION_SECRET || 'secret123',
+  secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
-  cookie: {
-    maxAge: 1000 * 60 * 60 * 24 // 1 day
-  }
+  cookie: { maxAge: 1000 * 60 * 60 * 24 }
 }));
 
-// Make user available in ALL EJS
+// Make user available in all views
 app.use((req, res, next) => {
   res.locals.user = req.session.user || null;
   next();
 });
 
-
-// =======================
-// 🚏 ROUTES
-// =======================
-
-// Auth (landing, login, register)
+// Routes
 app.use('/', require('./routes/auth'));
-
-// ❗ SAFE onboarding (only if exists)
-try {
-  app.use('/onboarding', require('./routes/onboarding'));
-} catch (err) {
-  console.log('⚠️ Onboarding route not found (skipped)');
-}
-
-// Main app routes
+app.use('/onboarding', require('./routes/onboarding'));
 app.use('/dashboard', require('./routes/dashboard'));
 app.use('/insights', require('./routes/insights'));
 app.use('/doctor', require('./routes/doctor'));
 app.use('/profile', require('./routes/profile'));
 
+// NEW:
+// const { loadCycleData } = require('./data/loadCycleData');
+// const { loadCycleData, getDataset } = require('./data/loadCycleData');
+// const PORT = process.env.PORT || 3000;
 
-// =======================
-// ❌ ERROR HANDLER
-// =======================
-
-// 404 page
-app.use((req, res) => {
-  res.status(404).send('404 - Page not found');
-});
-
-
-// =======================
-// 🚀 SERVER START
-// =======================
-
+// loadCycleData()
+//   .then(() => {
+//     app.listen(PORT, () => console.log(`Herlytics running on http://localhost:${PORT}`));
+//   })
+//   .catch(err => {
+//     console.error('Failed to load cycle dataset:', err);
+//     process.exit(1);
+//   });
+const { loadCycleData, getDataset } = require('./data/loadCycleData');
 const PORT = process.env.PORT || 3000;
 
-app.listen(PORT, () => {
-  console.log(`🚀 Herlytics running on http://localhost:${PORT}`);
-});
+loadCycleData()
+  .then(() => {
+    console.log(getDataset()[0]); // prints first row of dataset
+    app.listen(PORT, () => console.log(`Herlytics running on http://localhost:${PORT}`));
+  })
+  .catch(err => {
+    console.error('Failed to load cycle dataset:', err);
+    process.exit(1);
+  });
