@@ -1,66 +1,72 @@
-const router = require('express').Router();
-
+const express = require('express');
+const router = express.Router();
 const User = require('../models/User');
-const { requireAuth } = require('../middleware/auth');
-const { calculateRisk } = require('../controllers/riskEngine');
 
-/**
- * GET /onboarding
- */
-router.get('/', requireAuth, (req, res) => {
-  if (req.session.user.onboardingComplete) {
-    return res.redirect('/dashboard');
-  }
+function requireLogin(req, res, next) {
+  if (!req.session.user) return res.redirect('/login');
+  next();
+}
 
-  res.render('onboarding/index', { step: 1 });
+// Stage 1 — Cycle basics
+router.get('/stage1', requireLogin, (req, res) => res.render('onboarding/stage1', { error: null }));
+
+router.post('/stage1', requireLogin, async (req, res) => {
+  const { cycleGap, periodDuration } = req.body;
+  await User.findByIdAndUpdate(req.session.user.id, { cycleGap, periodDuration });
+  res.redirect('/onboarding/stage2');
 });
 
-/**
- * POST /onboarding/save
- */
-router.post('/save', requireAuth, async (req, res) => {
-  try {
-    const data = req.body;
-    const userId = req.session.user._id;
+// Stage 2 — Symptoms
+router.get('/stage2', requireLogin, (req, res) => res.render('onboarding/stage2', { error: null }));
 
-    // Ensure arrays
-    const physicalSymptoms = [].concat(data.physicalSymptoms || []);
-    const emotionalSymptoms = [].concat(data.emotionalSymptoms || []);
-    const knownConditions = [].concat(data.knownConditions || []);
+router.post('/stage2', requireLogin, async (req, res) => {
+  const physical = [].concat(req.body.physicalSymptoms || []);
+  const emotional = [].concat(req.body.emotionalSymptoms || []);
+  const severity = req.body.symptomSeverity;
+  await User.findByIdAndUpdate(req.session.user.id, {
+    physicalSymptoms: physical,
+    emotionalSymptoms: emotional,
+    symptomSeverity: severity
+  });
+  res.redirect('/onboarding/stage3');
+});
 
-    const updateData = {
-      cycleGap: data.cycleGap,
-      periodDuration: data.periodDuration,
-      physicalSymptoms,
-      emotionalSymptoms,
-      symptomSeverity: parseInt(data.symptomSeverity) || 5,
-      stressLevel: data.stressLevel,
-      sleepPattern: data.sleepPattern,
-      dietPattern: data.dietPattern,
-      activityLevel: data.activityLevel,
-      knownConditions,
-      hasDoctorAccess: data.hasDoctorAccess,
-      onboardingComplete: true
-    };
+// Stage 3 — Lifestyle
+router.get('/stage3', requireLogin, (req, res) => res.render('onboarding/stage3', { error: null }));
 
-    // Risk calculation
-    const risk = calculateRisk(updateData);
-    updateData.riskScore = risk.score;
-    updateData.riskLevel = risk.level;
-    updateData.riskFlags = risk.flags;
+router.post('/stage3', requireLogin, async (req, res) => {
+  const { stressLevel, sleepPattern, dietPattern, activityLevel } = req.body;
+  const conditions = [].concat(req.body.knownConditions || []);
+  await User.findByIdAndUpdate(req.session.user.id, {
+    stressLevel, sleepPattern, dietPattern, activityLevel,
+    knownConditions: conditions
+  });
+  res.redirect('/onboarding/stage4');
+});
 
-    await User.findByIdAndUpdate(userId, updateData);
+// Stage 4 — Past cycle dates
+router.get('/stage4', requireLogin, (req, res) => res.render('onboarding/stage4', { error: null }));
 
-    // Update session
-    req.session.user.onboardingComplete = true;
-    req.session.user.riskLevel = risk.level;
-    req.session.user.riskScore = risk.score;
-
-    return res.redirect('/dashboard');
-  } catch (error) {
-    console.error(error);
-    return res.redirect('/onboarding');
+router.post('/stage4', requireLogin, async (req, res) => {
+  // Dates are saved as CycleLogs
+  const CycleLog = require('../models/CycleLog');
+  const dates = [req.body.date1, req.body.date2, req.body.date3].filter(Boolean);
+  for (const d of dates) {
+    await CycleLog.create({ userId: req.session.user.id, periodStartDate: new Date(d) });
   }
+  res.redirect('/onboarding/stage5');
+});
+
+// Stage 5 — Doctor setup
+router.get('/stage5', requireLogin, (req, res) => res.render('onboarding/stage5', { error: null }));
+
+router.post('/stage5', requireLogin, async (req, res) => {
+  const { hasDoctorAccess, city } = req.body;
+  await User.findByIdAndUpdate(req.session.user.id, {
+    hasDoctorAccess, city,
+    onboardingComplete: true
+  });
+  res.redirect('/dashboard');
 });
 
 module.exports = router;

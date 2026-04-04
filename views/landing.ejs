@@ -1,0 +1,206 @@
+<%- include('partials/header') %>
+
+<nav class="navbar">
+  <a href="/" class="nav-brand">
+    <div class="logo-mark">🌸</div>
+    <span>Herlytics</span>
+  </a>
+  <div class="nav-right">
+    <a href="/login" class="btn btn-ghost btn-sm">Login</a>
+    <a href="/register" class="btn btn-primary btn-sm">Get Started ✨</a>
+  </div>
+</nav>
+
+<style>
+/* ── NAVBAR ── */
+.navbar {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(255,255,255,0.88);
+  backdrop-filter: blur(20px);
+  border-bottom: 1.5px solid #d9ccff;
+  padding: 0 2rem;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 64px;
+  box-shadow: 0 2px 24px rgba(139,92,246,0.07);
+}
+.nav-brand { display: flex; align-items: center; gap: 0.55rem; text-decoration: none; }
+.nav-brand .logo-mark {
+  width: 38px; height: 38px; border-radius: 12px;
+  background: linear-gradient(135deg, #bfa8ff, #7c3aed);
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 1.25rem; box-shadow: 0 2px 12px rgba(139,92,246,0.25);
+}
+.nav-brand span {
+  font-size: 1.45rem; font-weight: 700;
+  background: linear-gradient(135deg, #7c3aed, #c026d3);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.nav-right { display: flex; align-items: center; gap: 0.75rem; }
+
+/* ── GLOBAL ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'DM Sans', system-ui, sans-serif; background: #faf8ff; color: #2d1b5e; line-height: 1.6; }
+
+/* ── BUTTONS ── */
+.btn { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.65rem 1.4rem; border-radius: 10px; font-size: 0.9rem; font-weight: 600; cursor: pointer; border: none; text-decoration: none; transition: all 0.22s; white-space: nowrap; }
+.btn-primary { background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: white; box-shadow: 0 2px 12px rgba(139,92,246,0.3); }
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(139,92,246,0.45); }
+.btn-ghost { background: transparent; color: #7c6fa0; }
+.btn-ghost:hover { background: #f5f0ff; color: #2d1b5e; }
+.btn-outline { background: transparent; color: #7c3aed; border: 1.5px solid #a080ff; }
+.btn-outline:hover { background: #f5f0ff; }
+.btn-sm { padding: 0.4rem 0.9rem; font-size: 0.8rem; border-radius: 8px; }
+.btn-lg { padding: 0.9rem 2rem; font-size: 1rem; border-radius: 12px; }
+
+/* ── HERO ── */
+.landing-hero {
+  min-height: calc(100vh - 64px);
+  display: flex; align-items: center;
+  background: linear-gradient(135deg, #f5f0ff 0%, #fff 50%, #fce7f3 100%);
+  padding: 4rem 2rem; position: relative; overflow: hidden;
+}
+.landing-hero::before {
+  content: '';
+  position: absolute; top: -120px; right: -120px;
+  width: 500px; height: 500px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(139,92,246,0.10), transparent 70%);
+  pointer-events: none;
+}
+.landing-hero::after {
+  content: '';
+  position: absolute; bottom: -80px; left: -80px;
+  width: 380px; height: 380px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(236,72,153,0.08), transparent 70%);
+  pointer-events: none;
+}
+.hero-content { max-width: 600px; position: relative; z-index: 1; }
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  background: #ede5ff; color: #6d28d9;
+  padding: 0.35rem 1rem; border-radius: 99px;
+  font-size: 0.82rem; font-weight: 600; margin-bottom: 1.5rem;
+  animation: fadeUp 0.4s ease both;
+}
+.hero-title {
+  font-size: clamp(2.4rem, 5vw, 3.6rem);
+  font-weight: 900; line-height: 1.12; margin-bottom: 1.25rem;
+  animation: fadeUp 0.5s 0.1s ease both;
+}
+.hero-title span { background: linear-gradient(135deg, #7c3aed, #c026d3); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.hero-sub { font-size: 1.05rem; color: #7c6fa0; margin-bottom: 2rem; max-width: 480px; animation: fadeUp 0.5s 0.2s ease both; }
+.hero-buttons { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 2.5rem; animation: fadeUp 0.5s 0.3s ease both; }
+
+.hero-stats { display: flex; gap: 2rem; flex-wrap: wrap; animation: fadeUp 0.5s 0.4s ease both; }
+.hero-stat { text-align: left; }
+.hero-stat-num { font-size: 2rem; font-weight: 900; background: linear-gradient(135deg, #7c3aed, #c026d3); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; line-height: 1; }
+.hero-stat-label { font-size: 0.78rem; color: #7c6fa0; font-weight: 500; }
+
+/* ── FEATURES ── */
+.features-section {
+  background: white; padding: 6rem 2rem; text-align: center;
+}
+.features-section h2 { font-size: 2.2rem; font-weight: 800; color: #2d1b5e; margin-bottom: 0.75rem; }
+.section-sub { color: #7c6fa0; font-size: 1rem; margin-bottom: 3rem; }
+.features-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; max-width: 1100px; margin: 0 auto; text-align: left; }
+.feature-card {
+  background: #faf8ff; border: 1.5px solid #e8deff; border-radius: 16px; padding: 1.75rem;
+  transition: all 0.25s;
+}
+.feature-card:hover { transform: translateY(-4px); box-shadow: 0 8px 32px rgba(139,92,246,0.12); border-color: #bfa8ff; }
+.feature-icon { font-size: 2rem; margin-bottom: 0.75rem; }
+.feature-title { font-size: 1.05rem; font-weight: 700; color: #2d1b5e; margin-bottom: 0.5rem; }
+.feature-desc { font-size: 0.88rem; color: #7c6fa0; line-height: 1.65; }
+
+/* ── CTA ── */
+.landing-cta {
+  background: linear-gradient(135deg, #8b5cf6, #c026d3);
+  padding: 5rem 2rem; text-align: center;
+}
+.landing-cta h2 { font-size: 2.4rem; font-weight: 900; color: white; margin-bottom: 0.75rem; }
+.landing-cta p { color: rgba(255,255,255,0.85); font-size: 1rem; margin-bottom: 2rem; }
+
+/* ── FOOTER ── */
+.landing-footer {
+  background: #2d1b5e; padding: 2rem 3rem;
+  display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;
+}
+.landing-footer .brand { color: white; font-weight: 800; font-size: 1rem; }
+.landing-footer .copy { color: rgba(255,255,255,0.45); font-size: 0.8rem; }
+
+@keyframes fadeUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+</style>
+
+<!-- Floating petals -->
+<div style="position:fixed;pointer-events:none;z-index:0;font-size:1.2rem;opacity:0.12;left:8%;top:-30px;animation:drift 12s linear infinite;">🌸</div>
+<div style="position:fixed;pointer-events:none;z-index:0;font-size:0.9rem;opacity:0.12;left:65%;top:-30px;animation:drift 14s 2s linear infinite;">✨</div>
+<div style="position:fixed;pointer-events:none;z-index:0;font-size:1rem;opacity:0.10;left:82%;top:-30px;animation:drift 11s 4s linear infinite;">💜</div>
+<style>
+@keyframes drift { 0%{transform:translateY(-30px) rotate(0deg);opacity:0} 10%{opacity:0.15} 90%{opacity:0.1} 100%{transform:translateY(110vh) rotate(360deg);opacity:0} }
+</style>
+
+<!-- Hero -->
+<section class="landing-hero">
+  <div class="hero-content">
+    <div class="hero-badge">🌸 Built for Indian women</div>
+    <h1 class="hero-title">
+      Understand your cycle.<br/>
+      <span>Own your health.</span>
+    </h1>
+    <p class="hero-sub">
+      Herlytics tracks your periods, detects patterns, flags health risks,
+      and connects you to doctors — all in one private, intelligent app.
+    </p>
+    <div class="hero-buttons">
+      <a href="/register" class="btn btn-primary btn-lg">Start tracking free →</a>
+      <a href="/login" class="btn btn-outline btn-lg">I already have an account</a>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="hero-stat-num">541</div>
+        <div class="hero-stat-label">Patient records analysed</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">94%</div>
+        <div class="hero-stat-label">Risk detection accuracy</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">4</div>
+        <div class="hero-stat-label">Cycle phases tracked</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">Free</div>
+        <div class="hero-stat-label">Always, no hidden cost</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Features -->
+<section class="features-section">
+  <h2>Everything your cycle is trying to tell you</h2>
+  <p class="section-sub">Most apps just track dates. Herlytics understands your body.</p>
+  <div class="features-grid">
+    <div class="feature-card"><div class="feature-icon">📅</div><div class="feature-title">Intelligent cycle tracking</div><p class="feature-desc">Log periods and get predictions, phase explanations, and variance analysis — all based on your actual data.</p></div>
+    <div class="feature-card"><div class="feature-icon">🧠</div><div class="feature-title">PCOS risk detection</div><p class="feature-desc">Our risk engine is trained on 541 real patient records. It flags patterns associated with PCOS, thyroid issues, and hormonal imbalance — not guesses.</p></div>
+    <div class="feature-card"><div class="feature-icon">🩺</div><div class="feature-title">Doctor connection</div><p class="feature-desc">Find real gynecologists near you, see government health schemes, and get a shareable health report — only when you actually need a doctor.</p></div>
+    <div class="feature-card"><div class="feature-icon">🥗</div><div class="feature-title">Phase-based nutrition</div><p class="feature-desc">Get food and exercise recommendations based on your current cycle phase — specific to where you are today.</p></div>
+    <div class="feature-card"><div class="feature-icon">🔒</div><div class="feature-title">Completely private</div><p class="feature-desc">PIN-protected on shared phones. No ads. No data selling. Your health data stays yours — always.</p></div>
+    <div class="feature-card"><div class="feature-icon">🌙</div><div class="feature-title">Age-aware insights</div><p class="feature-desc">Teen, reproductive years, or perimenopause — Herlytics adapts its analysis to your life stage automatically.</p></div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="landing-cta">
+  <h2>Your cycle is data. Start reading it.</h2>
+  <p>Free. Private. Built for Indian women.</p>
+  <a href="/register" class="btn" style="background:white;color:#7c3aed;padding:15px 36px;border-radius:14px;font-size:1rem;font-weight:800;box-shadow:0 4px 20px rgba(0,0,0,0.15);display:inline-block;transition:all 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+    Create your free account →
+  </a>
+</section>
+
+<footer class="landing-footer">
+  <div class="brand">🌸 Herlytics</div>
+  <div class="copy">Built for GDG Hackathon · No data selling · Privacy first</div>
+</footer>
+
+<%- include('partials/footer') %>

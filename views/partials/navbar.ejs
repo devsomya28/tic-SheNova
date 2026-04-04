@@ -1,99 +1,10 @@
 <nav class="navbar">
-  <a href="<%= user ? '/dashboard' : '/' %>" class="nav-brand">
-    <div class="logo-mark">🌸</div>
-    <span>Herlytics</span>
-  </a>
-
-  <% if (user) { %>
+  <a href="/dashboard" class="nav-logo">🌸 Herlytics</a>
   <div class="nav-links">
-    <a href="/dashboard" class="<%= typeof activePage !== 'undefined' && activePage === 'dashboard' ? 'active' : '' %>">Dashboard</a>
-    <a href="/insights/cycle" class="<%= typeof activePage !== 'undefined' && activePage === 'cycle' ? 'active' : '' %>">Cycle Log</a>
-    <a href="/insights/nutrition" class="<%= typeof activePage !== 'undefined' && activePage === 'nutrition' ? 'active' : '' %>">Nutrition</a>
-    <a href="/insights/results" class="<%= typeof activePage !== 'undefined' && activePage === 'results' ? 'active' : '' %>">My Results</a>
-    <a href="/doctor" class="<%= typeof activePage !== 'undefined' && activePage === 'doctor' ? 'active' : '' %>">Doctor Share</a>
+    <a href="/dashboard">Dashboard</a>
+    <a href="/insights">Insights</a>
+    <a href="/doctor">Find Doctor</a>
+    <a href="/profile">⚙️ Profile</a>
+    <a href="/logout" class="nav-logout">Logout</a>
   </div>
-  <div class="nav-right">
-    <div class="nav-avatar" title="<%= user.name %>">
-      <%= user.name.charAt(0).toUpperCase() %>
-    </div>
-    <form action="/logout" method="POST" style="margin:0">
-      <button class="btn btn-ghost btn-sm" type="submit">Logout</button>
-    </form>
-  </div>
-  <% } else { %>
-  <div class="nav-right">
-    <a href="/login" class="btn btn-ghost btn-sm">Login</a>
-    <a href="/signup" class="btn btn-primary btn-sm">Get Started ✨</a>
-  </div>
-  <% } %>
 </nav>
-
-<style>
-.navbar {
-  position: sticky; top: 0; z-index: 100;
-  background: rgba(255,255,255,0.88);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-bottom: 1.5px solid var(--lav-200);
-  padding: 0 2rem;
-  display: flex; align-items: center; justify-content: space-between;
-  height: 64px;
-  box-shadow: 0 2px 24px rgba(139,92,246,0.07);
-}
-
-.nav-brand {
-  display: flex; align-items: center; gap: 0.55rem;
-  text-decoration: none;
-}
-.nav-brand .logo-mark {
-  width: 38px; height: 38px; border-radius: 12px;
-  background: linear-gradient(135deg, var(--lav-300), var(--lav-600));
-  display: flex; align-items: center; justify-content: center;
-  font-size: 1.25rem;
-  box-shadow: 0 2px 12px rgba(139,92,246,0.25);
-  transition: transform 0.2s;
-}
-.nav-brand .logo-mark:hover { transform: rotate(-8deg) scale(1.08); }
-.nav-brand span {
-  font-family: var(--font-display);
-  font-size: 1.45rem; font-weight: 700;
-  background: linear-gradient(135deg, var(--lav-600), #c026d3);
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.nav-links { display: flex; align-items: center; gap: 0.15rem; }
-.nav-links a {
-  text-decoration: none; color: var(--text-muted);
-  font-size: 0.88rem; font-weight: 500;
-  padding: 0.45rem 0.9rem; border-radius: 99px;
-  transition: all 0.2s; position: relative;
-}
-.nav-links a:hover {
-  color: var(--lav-600);
-  background: var(--lav-50);
-}
-.nav-links a.active {
-  color: var(--lav-700);
-  background: linear-gradient(135deg, var(--lav-100), #fce7f3);
-  font-weight: 600;
-}
-.nav-links a.active::after {
-  content: '';
-  position: absolute; bottom: -1px; left: 50%; transform: translateX(-50%);
-  width: 20px; height: 2.5px; border-radius: 99px;
-  background: linear-gradient(90deg, var(--lav-500), #c026d3);
-}
-
-.nav-right { display: flex; align-items: center; gap: 0.75rem; }
-.nav-avatar {
-  width: 36px; height: 36px; border-radius: 50%;
-  background: linear-gradient(135deg, var(--lav-400), #ec4899);
-  display: flex; align-items: center; justify-content: center;
-  color: white; font-weight: 700; font-size: 0.88rem; cursor: pointer;
-  box-shadow: 0 2px 10px rgba(236,72,153,0.3);
-  border: 2px solid white;
-  transition: transform 0.2s;
-}
-.nav-avatar:hover { transform: scale(1.08); }
-</style>

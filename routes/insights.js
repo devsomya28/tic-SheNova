@@ -1,20 +1,34 @@
 const express = require('express');
 const router = express.Router();
+const User = require('../models/User');
+const CycleLog = require('../models/CycleLog');
+const { getCycleStats } = require('../controllers/cycleEngine');
+const { calculateRisk } = require('../controllers/riskEngine');
+const { getPopulationStats, getSymptomFrequency } = require('../data/loadCycleData'); // ADD THIS
 
-router.get('/', (req, res) => {
+function requireLogin(req, res, next) {
   if (!req.session.user) return res.redirect('/login');
+  next();
+}
 
-  res.render('insights', {
-    risk: {
-      score: 42,
-      level: 'low',
-      message: 'Everything looks normal',
-      flags: [],
-      ageContext: null
-    },
-    stats: null,
-    user: {}
-  });
+router.get('/', requireLogin, async (req, res) => {
+  const user = await User.findById(req.session.user.id);
+  const logs = await CycleLog.find({ userId: user._id }).sort({ periodStartDate: -1 });
+
+  const dates = logs.map(l => l.periodStartDate);
+  const stats = getCycleStats(dates);
+  const risk = calculateRisk(user);
+
+  // ADD THESE: population comparisons from CSV
+  const populationStats = stats ? getPopulationStats(stats.avg) : null;
+  const symptomFreqs = {
+    heavy_flow: getSymptomFrequency('heavy_flow'),
+    acne:       getSymptomFrequency('acne'),
+    back_pain:  getSymptomFrequency('back_pain'),
+    clots:      getSymptomFrequency('clots'),
+  };
+
+  res.render('insights', { user, stats, logs, risk, populationStats, symptomFreqs });
 });
 
 module.exports = router;

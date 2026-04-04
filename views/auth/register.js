@@ -1,0 +1,43 @@
+
+<%- include('../partials/header') %>
+
+<div class="auth-page">
+  <div class="auth-card">
+    <div class="auth-brand">
+      <div class="auth-brand-logo">🌸</div>
+      <h1>Herlytics</h1>
+      <p>Understand your cycle. Own your health.</p>
+    </div>
+
+    <% if (error) { %>
+      <div class="alert alert-danger">⚠️ <%= error %></div>
+    <% } %>
+
+    <form action="/register" method="POST">
+      <div class="form-group">
+        <label>Full name</label>
+        <input type="text" name="name" placeholder="e.g. Priya Sharma" required />
+      </div>
+      <div class="form-group">
+        <label>Username <span class="hint">— only letters, numbers, underscore</span></label>
+        <input type="text" name="username" placeholder="e.g. priya_s" required />
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" name="password" placeholder="At least 6 characters" required />
+      </div>
+      <div class="form-group">
+        <label>4-digit PIN <span class="hint">— for quick unlock on shared phones</span></label>
+        <input type="password" name="pin" maxlength="4" placeholder="••••" />
+      </div>
+      <button type="submit" class="btn-primary" style="width:100%;justify-content:center;">
+        Create my profile →
+      </button>
+    </form>
+
+    <p class="auth-switch">Already have an account? <a href="/login">Log in</a></p>
+    <p class="privacy-note">🔒 No ads. No data selling. Ever.</p>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

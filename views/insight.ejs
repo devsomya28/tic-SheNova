@@ -1,0 +1,262 @@
+<%- include('partials/header') %>
+<%- include('partials/navbar') %>
+
+<style>
+:root{--lav-50:#f5f0ff;--lav-100:#ede5ff;--lav-200:#d9ccff;--lav-300:#bfa8ff;--lav-400:#a080ff;--lav-500:#8b5cf6;--lav-600:#7c3aed;--lav-700:#6d28d9;--rose:#f472b6;--rose-lt:#fce7f3;--amber:#f59e0b;--bg:#faf8ff;--surface:#fff;--border:#e8deff;--text:#2d1b5e;--text-muted:#7c6fa0;--shadow:0 4px 24px rgba(139,92,246,0.10);--radius:16px;--radius-sm:10px;}
+*,*::before,*::after{box-sizing:border-box;}
+body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(--text);}
+.page-container{max-width:860px;margin:0 auto;padding:2rem 1.5rem;}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem;box-shadow:var(--shadow);margin-bottom:1.25rem;}
+.card-title{font-size:1.05rem;font-weight:700;color:var(--text);margin-bottom:0.25rem;}
+.page-hero{display:flex;align-items:center;justify-content:space-between;gap:1rem;background:linear-gradient(135deg,var(--lav-500),var(--lav-700));color:white;border-radius:var(--radius);padding:1.5rem 2rem;margin-bottom:1.5rem;}
+.page-hero h2{font-size:1.4rem;font-weight:800;margin-bottom:0.25rem;}
+.page-hero p{opacity:0.85;font-size:0.9rem;}
+
+/* risk card */
+.risk-hero{border:none;position:relative;overflow:hidden;}
+.risk-hero::before{content:'';position:absolute;top:-60px;right:-60px;width:220px;height:220px;border-radius:50%;background:rgba(255,255,255,0.08);pointer-events:none;}
+.risk-high{background:linear-gradient(135deg,#c62828,#e53935);color:white;}
+.risk-moderate{background:linear-gradient(135deg,#e65100,#fb8c00);color:white;}
+.risk-low{background:linear-gradient(135deg,var(--lav-500),var(--lav-700));color:white;}
+.risk-top{display:flex;align-items:flex-start;gap:1.5rem;margin-bottom:1.25rem;}
+.risk-score-circle{background:rgba(255,255,255,0.2);border-radius:50%;width:90px;height:90px;display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0;border:3px solid rgba(255,255,255,0.4);}
+.risk-score-num{font-size:2rem;font-weight:900;line-height:1;}
+.risk-score-label{font-size:0.72rem;opacity:0.8;}
+.risk-level-badge{display:inline-block;background:rgba(255,255,255,0.25);padding:0.3rem 0.9rem;border-radius:99px;font-size:0.8rem;font-weight:700;letter-spacing:0.05em;margin-bottom:0.5rem;}
+.risk-message{font-size:0.9rem;opacity:0.92;line-height:1.6;max-width:480px;}
+.flags-wrap{margin-top:1rem;padding-top:1rem;border-top:1px solid rgba(255,255,255,0.2);}
+.flags-label{font-size:0.72rem;font-weight:700;letter-spacing:0.08em;opacity:0.8;text-transform:uppercase;margin-bottom:0.5rem;}
+.flags-row{display:flex;flex-wrap:wrap;gap:0.4rem;}
+.flag-pill{background:rgba(255,255,255,0.2);padding:0.25rem 0.7rem;border-radius:99px;font-size:0.78rem;font-weight:600;}
+.disclaimer{font-size:0.75rem;opacity:0.7;margin-top:1rem;font-style:italic;}
+
+/* rec grid */
+.rec-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1rem;margin-bottom:1.25rem;}
+.rec-card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius);padding:1.25rem;}
+.rec-card.exercise{border-color:var(--lav-300);background:linear-gradient(135deg,var(--lav-50),#fff);}
+.rec-card.diet{border-color:#b9f6ca;background:linear-gradient(135deg,#e8f5e9,#fff);}
+.rec-card.causes{border-color:#ffe082;background:linear-gradient(135deg,#fff9e6,#fff);}
+.rec-card.doctor{border-color:var(--rose);background:linear-gradient(135deg,var(--rose-lt),#fff);}
+.rec-icon{font-size:1.75rem;margin-bottom:0.5rem;}
+.rec-title{font-size:0.95rem;font-weight:700;color:var(--text);margin-bottom:0.6rem;}
+.rec-list{list-style:none;display:flex;flex-direction:column;gap:0.3rem;}
+.rec-list li{font-size:0.83rem;color:var(--text-muted);padding-left:1.1rem;position:relative;}
+.rec-list li::before{content:'•';position:absolute;left:0;color:var(--lav-500);font-weight:700;}
+
+/* stats row */
+.stats-row{display:flex;gap:1rem;margin-top:1.25rem;flex-wrap:wrap;}
+.stat-box{flex:1;min-width:80px;background:var(--lav-50);border:1px solid var(--lav-200);border-radius:var(--radius-sm);padding:0.75rem;text-align:center;}
+.stat-num{display:block;font-size:1.5rem;font-weight:800;color:var(--lav-700);}
+.stat-label{font-size:0.72rem;color:var(--text-muted);font-weight:500;}
+.stat-flag{color:#e65100;}
+.stat-ok{color:#2e7d32;}
+
+/* phase card */
+.phase-card{text-align:center;background:linear-gradient(135deg,var(--lav-50),#fff9ff);border:1.5px solid var(--lav-200);}
+.phase-big{font-size:3.5rem;margin-bottom:0.5rem;}
+.phase-name{font-size:1.3rem;font-weight:800;color:var(--lav-700);margin-bottom:0.4rem;}
+.phase-hormones{font-size:0.85rem;color:var(--text-muted);margin-bottom:0.75rem;}
+.phase-tip-box{background:var(--lav-100);border-radius:var(--radius-sm);padding:0.9rem 1.25rem;font-size:0.88rem;color:var(--lav-800);text-align:left;}
+
+/* age context */
+.age-insight{background:linear-gradient(135deg,#fff5f8,#fff);border:1.5px solid var(--lav-200);border-left:4px solid var(--lav-500);border-radius:var(--radius);padding:1.25rem;margin-bottom:1.25rem;display:flex;gap:1rem;align-items:flex-start;}
+
+/* buttons */
+.btn-primary{display:inline-flex;align-items:center;gap:0.5rem;padding:0.65rem 1.4rem;border-radius:10px;font-size:0.9rem;font-weight:600;cursor:pointer;border:none;text-decoration:none;background:linear-gradient(135deg,var(--lav-500),var(--lav-700));color:white;box-shadow:0 2px 12px rgba(139,92,246,0.3);transition:all 0.22s;}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 4px 18px rgba(139,92,246,0.4);}
+.btn-secondary{display:inline-flex;align-items:center;padding:0.5rem 1.1rem;border-radius:8px;font-size:0.85rem;font-weight:600;text-decoration:none;background:transparent;color:var(--lav-600);border:1.5px solid var(--lav-400);transition:all 0.2s;}
+.btn-secondary:hover{background:var(--lav-50);}
+
+.card-title-bar{display:flex;align-items:center;gap:0.5rem;margin-bottom:0.25rem;}
+.card-sub{font-size:0.78rem;color:var(--text-muted);margin-bottom:1rem;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:translateY(0);}}
+.fade-up{animation:fadeUp 0.45s ease both;}
+@media(max-width:640px){.rec-grid{grid-template-columns:1fr;}}
+</style>
+
+<div class="page-container">
+
+  <div class="page-hero fade-up">
+    <div>
+      <h2>Your health insights</h2>
+      <p>Patterns, risks, and personalised recommendations.</p>
+    </div>
+  </div>
+
+  <!-- Risk Card -->
+  <div class="card risk-hero risk-<%= risk.level %> fade-up">
+    <div class="risk-top">
+      <div class="risk-score-circle">
+        <span class="risk-score-num"><%= risk.score %></span>
+        <span class="risk-score-label">/ 100</span>
+      </div>
+      <div>
+        <div class="risk-level-badge"><%= risk.level.toUpperCase() %> RISK</div>
+        <p class="risk-message"><%= risk.message %></p>
+      </div>
+    </div>
+
+    <% if (risk.ageContext) { %>
+    <div style="background:rgba(255,255,255,0.15);border-radius:var(--radius-sm);padding:1rem;margin-bottom:1rem;display:flex;gap:0.75rem;align-items:flex-start;">
+      <span style="font-size:1.6rem;">🗓️</span>
+      <div>
+        <div style="font-size:0.72rem;font-weight:800;opacity:0.8;letter-spacing:1px;margin-bottom:4px;text-transform:uppercase;">AGE-BASED INSIGHT</div>
+        <div style="font-size:0.95rem;font-weight:700;margin-bottom:4px;"><%= risk.ageContext.label %></div>
+        <p style="font-size:0.85rem;opacity:0.9;line-height:1.6;"><%= risk.ageContext.message %></p>
+      </div>
+    </div>
+    <% } %>
+
+    <% if (risk.flags.length > 0) { %>
+    <div class="flags-wrap">
+      <div class="flags-label">PATTERNS WE NOTICED</div>
+      <div class="flags-row">
+        <% risk.flags.forEach(f => { %>
+        <span class="flag-pill">⚠️ <%= f %></span>
+        <% }) %>
+      </div>
+    </div>
+    <% } %>
+
+    <% if (risk.level === 'high') { %>
+    <div style="margin-top:1rem;">
+      <a href="/doctor" class="btn-primary" style="background:white;color:var(--lav-700);">🩺 Find a doctor near me →</a>
+    </div>
+    <% } %>
+
+    <p class="disclaimer">This analysis is based on patterns from 541 real patient records. It is not a medical diagnosis — always consult a doctor for medical advice.</p>
+  </div>
+
+  <!-- Recommendations -->
+  <% if (stats) { %>
+  <div class="card-title" style="padding:0 4px;margin-bottom:0.75rem;font-size:1.1rem;font-weight:800;color:var(--text);">Personalised recommendations</div>
+  <div class="rec-grid fade-up">
+
+    <div class="rec-card exercise">
+      <div class="rec-icon">🧘</div>
+      <div class="rec-title">Exercise for <%= stats.phase.name %> phase</div>
+      <ul class="rec-list">
+        <% if (stats.phase.name === 'Menstrual') { %>
+          <li>Gentle yoga or stretching</li><li>Short walks — avoid intense workouts</li><li>Child's pose for cramp relief</li><li>Rest is productive — honour it</li>
+        <% } else if (stats.phase.name === 'Follicular') { %>
+          <li>Running, cycling, or HIIT</li><li>Strength training works well now</li><li>Try new workouts — energy is high</li><li>Dance, swim, or group classes</li>
+        <% } else if (stats.phase.name === 'Ovulation') { %>
+          <li>High intensity cardio</li><li>Competitive sports — peak strength</li><li>Heavy lifting if you train</li><li>Outdoor activities for mood boost</li>
+        <% } else { %>
+          <li>Moderate yoga or pilates</li><li>Light walks — avoid overexertion</li><li>Swimming for mood and cramps</li><li>Reduce intensity as period nears</li>
+        <% } %>
+      </ul>
+    </div>
+
+    <div class="rec-card diet">
+      <div class="rec-icon">🥗</div>
+      <div class="rec-title">Diet for your symptoms</div>
+      <ul class="rec-list">
+        <% if (user.physicalSymptoms && user.physicalSymptoms.includes('heavy_flow')) { %>
+          <li>Iron-rich foods: dal, spinach, ragi</li><li>Vitamin C helps absorb iron</li><li>Avoid tea/coffee with meals</li>
+        <% } %>
+        <% if (user.physicalSymptoms && user.physicalSymptoms.includes('facial_hair')) { %>
+          <li>Reduce refined sugar and carbs</li><li>Spearmint tea may help with androgens</li><li>Include flaxseeds in daily diet</li>
+        <% } %>
+        <% if (stats.phase.name === 'Luteal') { %>
+          <li>Magnesium-rich foods: dark chocolate, nuts</li><li>Complex carbs reduce mood swings</li><li>Reduce salt to ease bloating</li>
+        <% } else if (stats.phase.name === 'Menstrual') { %>
+          <li>Dates, jaggery, and beetroot</li><li>Warm ginger tea for cramps</li><li>Stay hydrated — coconut water helps</li>
+        <% } else { %>
+          <li>Fresh fruits and vegetables daily</li><li>Whole grains over refined carbs</li><li>Omega-3: walnuts, flaxseeds, fish</li>
+        <% } %>
+      </ul>
+    </div>
+
+    <div class="rec-card causes">
+      <div class="rec-icon">🔍</div>
+      <div class="rec-title">Possible causes to explore</div>
+      <ul class="rec-list">
+        <% if (risk.level === 'high') { %>
+          <li>PCOS — very common, very treatable</li><li>Thyroid imbalance can affect cycles</li><li>Hormonal fluctuation from stress</li><li>Anaemia from heavy blood loss</li>
+        <% } else if (risk.level === 'moderate') { %>
+          <li>Stress disrupting hormone balance</li><li>Disrupted sleep affecting cortisol</li><li>Dietary iron deficiency</li><li>Normal variation — many cycles vary</li>
+        <% } else { %>
+          <li>Your cycle looks healthy overall</li><li>Small variations are completely normal</li><li>Keep tracking to build a better picture</li><li>Stress and travel can shift timing</li>
+        <% } %>
+      </ul>
+    </div>
+
+    <% if (risk.level !== 'low') { %>
+    <div class="rec-card doctor">
+      <div class="rec-icon">🩺</div>
+      <div class="rec-title">When to see a doctor</div>
+      <ul class="rec-list">
+        <% if (risk.level === 'high') { %>
+          <li>Book an appointment soon — don't wait</li><li>Ask specifically about PCOS screening</li><li>Request: hormonal blood test (FSH, LH)</li><li>Ultrasound to check ovaries</li>
+        <% } else { %>
+          <li>Mention symptoms at next routine visit</li><li>No emergency — but worth discussing</li><li>Track 2 more cycles before worrying</li><li>Note which symptoms worsen over time</li>
+        <% } %>
+      </ul>
+      <a href="/doctor" class="btn-secondary" style="margin-top:1rem;font-size:0.82rem;">Find doctor →</a>
+    </div>
+    <% } else { %>
+    <div class="rec-card" style="background:linear-gradient(135deg,#e8f5ee,#f0faf5);border-color:#b2dfdb;">
+      <div class="rec-icon">💚</div>
+      <div class="rec-title">You're doing well</div>
+      <ul class="rec-list">
+        <li>No urgent medical concern detected</li><li>Keep logging every cycle</li><li>Annual gynaecologist check is good practice</li><li>Reach out if anything feels different</li>
+      </ul>
+    </div>
+    <% } %>
+
+  </div>
+  <% } %>
+
+  <!-- Cycle Chart -->
+  <% if (stats && stats.gaps.length > 0) { %>
+  <div class="card fade-up">
+    <div class="card-title-bar"><span>📈</span> Cycle length over time</div>
+    <div class="card-sub">Your tracked history</div>
+    <canvas id="cycleChart" height="90"></canvas>
+    <div class="stats-row">
+      <div class="stat-box"><span class="stat-num"><%= stats.avg %></span><span class="stat-label">Avg days</span></div>
+      <div class="stat-box"><span class="stat-num"><%= stats.min %></span><span class="stat-label">Shortest</span></div>
+      <div class="stat-box"><span class="stat-num"><%= stats.max %></span><span class="stat-label">Longest</span></div>
+      <div class="stat-box"><span class="stat-num <%= stats.isIrregular ? 'stat-flag' : 'stat-ok' %>"><%= stats.variance %></span><span class="stat-label">Variance</span></div>
+    </div>
+  </div>
+
+  <script>
+  new Chart(document.getElementById('cycleChart').getContext('2d'), {
+    type: 'line',
+    data: {
+      labels: <%- JSON.stringify(stats.gaps.map((_,i) => `Cycle ${i+1}`)) %>,
+      datasets: [{
+        label: 'Cycle length (days)',
+        data: <%- JSON.stringify(stats.gaps) %>,
+        borderColor: '#8b5cf6',
+        backgroundColor: 'rgba(139,92,246,0.06)',
+        borderWidth: 2.5, pointBackgroundColor: '#8b5cf6', pointRadius: 5, tension: 0.4, fill: true
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { display: false } },
+      scales: {
+        y: { min:15, suggestedMax:45, title:{display:true,text:'Days'}, grid:{color:'rgba(139,92,246,0.06)'} },
+        x: { grid:{ display:false } }
+      }
+    }
+  });
+  </script>
+  <% } %>
+
+  <!-- Phase Card -->
+  <% if (stats) { %>
+  <div class="card phase-card fade-up">
+    <div class="phase-big"><%= stats.phase.emoji %></div>
+    <div class="phase-name"><%= stats.phase.name %> Phase</div>
+    <div class="phase-hormones"><%= stats.phase.hormones %></div>
+    <div class="phase-tip-box"><%= stats.phase.tip %></div>
+  </div>
+  <% } %>
+
+</div>
+
+<%- include('partials/footer') %>
