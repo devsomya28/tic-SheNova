@@ -50,6 +50,7 @@ app.use('/profile',    require('./routes/profile'));
 app.use('/pcos',       require('./routes/pcos'));
 app.use('/',           require('./routes/report'));
 app.use('/blood', require('./routes/blood'));
+app.use('/chat', require('./routes/chat'));
 // Start server — load all datasets first, then listen
 const PORT = process.env.PORT || 3000;
 
