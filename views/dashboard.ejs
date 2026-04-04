@@ -146,18 +146,23 @@
       <div class="calendar-grid" id="calGrid" style="margin-top:6px;"></div>
     </div>
 
-    <div class="cal-legend">
-      <div class="cal-legend-item">
-        <div class="cal-dot" style="background:var(--rose);"></div> Today
-      </div>
-      <div class="cal-legend-item">
-        <div class="cal-dot" style="background:var(--rose-lt); border:2px solid var(--rose);"></div> Period logged
-      </div>
-      <div class="cal-legend-item">
-        <div class="cal-dot" style="background:#fff0f5; border:2px dashed #f48fb1;"></div> Predicted
-      </div>
-    </div>
+   <div class="cal-legend">
+  <div class="cal-legend-item">
+    <div class="cal-dot" style="background:var(--rose);"></div> Period
   </div>
+  <div class="cal-legend-item">
+    <div class="cal-dot" style="background:#fff0f5;border:2px dashed #f48fb1;"></div> Predicted
+  </div>
+  <div class="cal-legend-item">
+    <div class="cal-dot" style="background:#e8f5e9;border:1px solid #a5d6a7;"></div> Follicular
+  </div>
+  <div class="cal-legend-item">
+    <div class="cal-dot" style="background:#fff9c4;border:1px solid #ffe082;"></div> Ovulation
+  </div>
+  <div class="cal-legend-item">
+    <div class="cal-dot" style="background:#f3e5f5;border:1px solid #ce93d8;"></div> Luteal
+  </div>
+</div>
 
   <!-- Log Period -->
   <div class="card">
@@ -242,77 +247,111 @@
 <script>
 const periodDates = <%- JSON.stringify(logs.map(l => l.periodStartDate)) %>;
 const predictedNext = "<%= stats ? stats.nextPeriod.toISOString().split('T')[0] : '' %>";
+const avgCycle = <%= stats ? stats.avg : 28 %>;
+const periodDuration = parseInt("<%= user.periodDuration || '5' %>") || 5;
 
 let currentDate = new Date();
 
-function renderCalendar(date) {
+function getPhaseForDate(date) {
+  if (!periodDates.length) return null;
 
-  const year = date.getFullYear();
+  // Find the most recent period start before or on this date
+  const sorted = periodDates
+    .map(d => new Date(d))
+    .filter(d => d <= date)
+    .sort((a, b) => b - a);
+
+  if (!sorted.length) return null;
+
+  const lastPeriod = sorted[0];
+  const dayOfCycle = Math.floor((date - lastPeriod) / (1000 * 60 * 60 * 24)) + 1;
+
+  if (dayOfCycle < 1 || dayOfCycle > avgCycle + 7) return null;
+
+  if (dayOfCycle <= periodDuration)           return 'menstrual';
+  if (dayOfCycle <= Math.round(avgCycle * 0.43)) return 'follicular';
+  if (dayOfCycle <= Math.round(avgCycle * 0.57)) return 'ovulation';
+  return 'luteal';
+}
+
+function renderCalendar(date) {
+  const year  = date.getFullYear();
   const month = date.getMonth();
   const today = new Date();
 
   document.getElementById('calMonthLabel').textContent =
-    date.toLocaleDateString('en-IN',{month:'long',year:'numeric'});
+    date.toLocaleDateString('en-IN', { month: 'long', year: 'numeric' });
 
   const dayNames = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  document.getElementById('calDayNames').innerHTML =
+    dayNames.map(d => `<div class="cal-day-name">${d}</div>`).join('');
 
-  const namesEl = document.getElementById('calDayNames');
-  namesEl.innerHTML = dayNames.map(d =>
-    `<div class="cal-day-name">${d}</div>`
-  ).join('');
+  const firstDay    = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
 
-  const firstDay = new Date(year,month,1).getDay();
-  const daysInMonth = new Date(year,month+1,0).getDate();
+  const periodSet = new Set(periodDates.map(d => new Date(d).toDateString()));
 
-  const periodSet = new Set(
-    periodDates.map(d => new Date(d).toDateString())
-  );
-
-  let html='';
-
-  for(let i=0;i<firstDay;i++){
-    html += `<div class="cal-day empty"></div>`;
+  const predictedDates = new Set();
+  if (predictedNext) {
+    const base = new Date(predictedNext);
+    for (let i = 0; i < periodDuration; i++) {
+      const d = new Date(base);
+      d.setDate(base.getDate() + i);
+      predictedDates.add(d.toDateString());
+    }
   }
 
-  for(let d=1; d<=daysInMonth; d++){
+  let html = '';
+  for (let i = 0; i < firstDay; i++) html += `<div class="cal-day empty"></div>`;
 
-    const thisDate = new Date(year,month,d);
+  for (let d = 1; d <= daysInMonth; d++) {
+    const thisDate  = new Date(year, month, d);
+    const isToday   = thisDate.toDateString() === today.toDateString();
+    const isPeriod  = periodSet.has(thisDate.toDateString());
+    const isPredicted = predictedDates.has(thisDate.toDateString());
+    const phase     = getPhaseForDate(thisDate);
 
-    const isToday =
-      thisDate.toDateString() === today.toDateString();
+    let cls   = 'cal-day';
+    let style = '';
+    let title = '';
 
-    const isPeriod =
-      periodSet.has(thisDate.toDateString());
+    if (isPeriod) {
+      cls += ' period';
+      title = 'Period day';
+    } else if (isPredicted) {
+      cls += ' predicted';
+      title = 'Predicted period';
+    } else if (phase === 'follicular') {
+      style = 'background:#e8f5e9;color:#2e7d32;';
+      title = 'Follicular phase';
+    } else if (phase === 'ovulation') {
+      style = 'background:#fff9c4;color:#f57f17;font-weight:700;';
+      title = 'Ovulation window';
+    } else if (phase === 'luteal') {
+      style = 'background:#f3e5f5;color:#6a1b9a;';
+      title = 'Luteal phase';
+    }
 
-    const isPredicted =
-      predictedNext &&
-      thisDate.toDateString() === new Date(predictedNext).toDateString();
+    if (isToday) {
+      cls += ' today';
+      style += 'outline:2px solid var(--rose);outline-offset:-2px;';
+    }
 
-    let cls='cal-day';
-
-    if(isToday) cls+=' today';
-    else if(isPeriod) cls+=' period';
-    else if(isPredicted) cls+=' predicted';
-
-    html += `<div class="${cls}">${d}</div>`;
+    html += `<div class="${cls}" style="${style}" title="${title}">${d}</div>`;
   }
 
   document.getElementById('calGrid').innerHTML = html;
 }
 
-document.getElementById('prevMonth').addEventListener('click',()=>{
-  currentDate =
-    new Date(currentDate.getFullYear(),currentDate.getMonth()-1,1);
+document.getElementById('prevMonth').addEventListener('click', () => {
+  currentDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1);
   renderCalendar(currentDate);
 });
-
-document.getElementById('nextMonth').addEventListener('click',()=>{
-  currentDate =
-    new Date(currentDate.getFullYear(),currentDate.getMonth()+1,1);
+document.getElementById('nextMonth').addEventListener('click', () => {
+  currentDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1);
   renderCalendar(currentDate);
 });
 
 renderCalendar(currentDate);
 </script>
-
 <%- include('partials/footer') %>
