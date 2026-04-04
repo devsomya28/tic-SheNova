@@ -1,0 +1,427 @@
+<%- include('partials/header') %>
+
+<div class="pcos-page">
+  <!-- ── Progress bar ──────────────────────────────────────────────────── -->
+  <div class="pcos-progress-wrap">
+    <div class="pcos-progress-bar">
+      <div class="pcos-progress-fill" id="progFill" style="width:0%"></div>
+    </div>
+    <span class="pcos-step-counter" id="stepCounter">Step 1 of 6</span>
+  </div>
+
+  <!-- ── Assessment Form ───────────────────────────────────────────────── -->
+  <div class="pcos-card" id="assessCard">
+
+    <!-- Step 0: Age -->
+    <div class="pcos-step active" id="s0">
+      <p class="pcos-q-label">Getting started</p>
+      <h2 class="pcos-q-title">How old are you?</h2>
+      <div class="pcos-age-wrap">
+        <input class="pcos-age-input" type="number" id="ageIn"
+               min="10" max="80" placeholder="—"
+               value="<%= user && user.age ? user.age : '' %>" />
+        <span class="pcos-age-unit">years</span>
+      </div>
+      <div class="pcos-nav">
+        <div></div>
+        <button class="pcos-btn pcos-btn-primary" onclick="goNext(0)">Continue</button>
+      </div>
+    </div>
+
+    <!-- Step 1: Cycle length -->
+    <div class="pcos-step" id="s1">
+      <p class="pcos-q-label">Menstrual cycle</p>
+      <h2 class="pcos-q-title">How would you describe your cycle length?</h2>
+      <div class="pcos-options" id="opts1">
+        <div class="pcos-opt" onclick="pick(this,'cycleGap','normal')">
+          <span class="pcos-opt-icon">✓</span> Regular — 21 to 35 days
+        </div>
+        <div class="pcos-opt" onclick="pick(this,'cycleGap','more35')">
+          <span class="pcos-opt-icon">→</span> Long — more than 35 days
+        </div>
+        <div class="pcos-opt" onclick="pick(this,'cycleGap','less21')">
+          <span class="pcos-opt-icon">←</span> Short — less than 21 days
+        </div>
+        <div class="pcos-opt" onclick="pick(this,'cycleGap','irregular')">
+          <span class="pcos-opt-icon">~</span> Irregular — varies a lot
+        </div>
+      </div>
+      <div class="pcos-nav">
+        <button class="pcos-btn" onclick="goBack(1)">Back</button>
+        <button class="pcos-btn pcos-btn-primary" onclick="goNext(1)">Continue</button>
+      </div>
+    </div>
+
+    <!-- Step 2: Cycle symptoms -->
+    <div class="pcos-step" id="s2">
+      <p class="pcos-q-label">Cycle symptoms</p>
+      <h2 class="pcos-q-title">Do you experience any of these during your cycle?</h2>
+      <p class="pcos-multi-hint">Select all that apply</p>
+      <div class="pcos-chips">
+        <div class="pcos-chip" onclick="toggleChip(this,'cycSym','clots')">Blood clots</div>
+        <div class="pcos-chip" onclick="toggleChip(this,'cycSym','heavy_flow')">Heavy bleeding</div>
+        <div class="pcos-chip" onclick="toggleChip(this,'cycSym','spotting')">Spotting between periods</div>
+        <div class="pcos-chip" onclick="toggleChip(this,'cycSym','back_pain')">Pelvic / back pain</div>
+        <div class="pcos-chip pcos-chip-none" onclick="clearChips('cycSym',this)">None of these</div>
+      </div>
+      <div class="pcos-nav">
+        <button class="pcos-btn" onclick="goBack(2)">Back</button>
+        <button class="pcos-btn pcos-btn-primary" onclick="goNext(2)">Continue</button>
+      </div>
+    </div>
+
+    <!-- Step 3: Physical symptoms -->
+    <div class="pcos-step" id="s3">
+      <p class="pcos-q-label">Physical symptoms</p>
+      <h2 class="pcos-q-title">Have you noticed any of these changes?</h2>
+      <p class="pcos-multi-hint">Select all that apply</p>
+      <div class="pcos-chips">
+        <div class="pcos-chip" onclick="toggleChip(this,'physSym','facial_hair')">Unusual hair growth (face/body)</div>
+        <div class="pcos-chip" onclick="toggleChip(this,'physSym','skin_darkening')">Skin darkening (neck, underarms)</div>
+        <div class="pcos-chip" onclick="toggleChip(this,'physSym','hair_loss')">Hair thinning or loss</div>
+        <div class="pcos-chip" onclick="toggleChip(this,'physSym','weight_gain')">Unexplained weight gain</div>
+        <div class="pcos-chip" onclick="toggleChip(this,'physSym','acne')">Persistent acne / oily skin</div>
+        <div class="pcos-chip pcos-chip-none" onclick="clearChips('physSym',this)">None of these</div>
+      </div>
+      <div class="pcos-nav">
+        <button class="pcos-btn" onclick="goBack(3)">Back</button>
+        <button class="pcos-btn pcos-btn-primary" onclick="goNext(3)">Continue</button>
+      </div>
+    </div>
+
+    <!-- Step 4: Activity -->
+    <div class="pcos-step" id="s4">
+      <p class="pcos-q-label">Lifestyle</p>
+      <h2 class="pcos-q-title">How is your activity level?</h2>
+      <div class="pcos-options">
+        <div class="pcos-opt" onclick="pick(this,'activity','active')">
+          <span class="pcos-opt-icon">↑</span> Active — exercise regularly
+        </div>
+        <div class="pcos-opt" onclick="pick(this,'activity','light')">
+          <span class="pcos-opt-icon">→</span> Light — occasional walks
+        </div>
+        <div class="pcos-opt" onclick="pick(this,'activity','too_tired')">
+          <span class="pcos-opt-icon">↓</span> Low — too tired to exercise
+        </div>
+        <div class="pcos-opt" onclick="pick(this,'activity','no_exercise')">
+          <span class="pcos-opt-icon">×</span> Sedentary — little movement
+        </div>
+      </div>
+      <div class="pcos-nav">
+        <button class="pcos-btn" onclick="goBack(4)">Back</button>
+        <button class="pcos-btn pcos-btn-primary" onclick="goNext(4)">Continue</button>
+      </div>
+    </div>
+
+    <!-- Step 5: Diet -->
+    <div class="pcos-step" id="s5">
+      <p class="pcos-q-label">Diet</p>
+      <h2 class="pcos-q-title">How would you describe your eating habits?</h2>
+      <div class="pcos-options">
+        <div class="pcos-opt" onclick="pick(this,'diet','balanced')">
+          <span class="pcos-opt-icon">✓</span> Balanced — varied, regular meals
+        </div>
+        <div class="pcos-opt" onclick="pick(this,'diet','fast_food')">
+          <span class="pcos-opt-icon">!</span> Mostly processed or fast food
+        </div>
+        <div class="pcos-opt" onclick="pick(this,'diet','skipping')">
+          <span class="pcos-opt-icon">~</span> Irregular — often skip meals
+        </div>
+        <div class="pcos-opt" onclick="pick(this,'diet','restricting')">
+          <span class="pcos-opt-icon">↓</span> Restrictive — eating very little
+        </div>
+      </div>
+      <div class="pcos-nav">
+        <button class="pcos-btn" onclick="goBack(5)">Back</button>
+        <button class="pcos-btn pcos-btn-primary" id="submitBtn" onclick="submitAssessment()">
+          See my results
+        </button>
+      </div>
+    </div>
+
+    <!-- Loading state -->
+    <div class="pcos-step" id="sLoading">
+      <div class="pcos-loading">
+        <div class="pcos-spinner"></div>
+        <p>Analysing your responses…</p>
+      </div>
+    </div>
+
+    <!-- Error state -->
+    <div class="pcos-step" id="sError">
+      <div class="pcos-error">
+        <p id="errorMsg">Something went wrong. Please try again.</p>
+        <button class="pcos-btn pcos-btn-primary" onclick="showStep(0)">Start over</button>
+      </div>
+    </div>
+
+  </div><!-- /.pcos-card -->
+
+  <!-- ── Results (hidden until assessment submitted) ─────────────────── -->
+  <div class="pcos-results" id="resultsSection" style="display:none">
+
+    <!-- Risk score -->
+    <div class="pcos-result-header">
+      <div class="pcos-score-ring">
+        <svg viewBox="0 0 120 120" width="120" height="120">
+          <circle cx="60" cy="60" r="52" fill="none" stroke="#f0e8f0" stroke-width="9"/>
+          <circle cx="60" cy="60" r="52" fill="none" stroke="#c2506a" stroke-width="9"
+                  stroke-linecap="round" stroke-dasharray="327"
+                  id="ringArc" stroke-dashoffset="327"
+                  transform="rotate(-90 60 60)"/>
+        </svg>
+        <div class="pcos-score-num" id="scoreNum">0</div>
+      </div>
+      <div id="riskBadge" class="pcos-risk-badge">—</div>
+      <p id="riskMsg" class="pcos-risk-msg"></p>
+      <p class="pcos-disclaimer">This tool is not a diagnosis. Always consult a qualified healthcare provider.</p>
+    </div>
+
+    <!-- Risk flags -->
+    <div id="flagsWrap" style="display:none; margin-bottom:1.5rem">
+      <h3 class="pcos-section-title">Risk factors detected</h3>
+      <div class="pcos-flags" id="flagsList"></div>
+    </div>
+
+    <!-- Nutrient snapshot from NHANES -->
+    <h3 class="pcos-section-title">Your nutrient snapshot <span class="pcos-source-tag">NHANES 2017–18</span></h3>
+    <p class="pcos-section-sub">Average dietary intake for women your age. Bars show how close your group is to the PCOS-optimised target.</p>
+    <div class="pcos-nutrient-grid" id="nutrientGrid"></div>
+    <p class="pcos-nhanes-note">Source: NHANES Select Mean Dietary Intake Estimates (2017–2018) · Female · All racial/ethnic groups</p>
+
+    <!-- Diet recommendations -->
+    <h3 class="pcos-section-title">Personalised diet focus</h3>
+    <div class="pcos-food-list" id="foodList"></div>
+
+    <div class="pcos-result-footer">
+      <button class="pcos-btn" onclick="restartAssessment()">Retake assessment</button>
+      <a class="pcos-btn pcos-btn-primary" href="/insights">View full insights →</a>
+    </div>
+
+  </div><!-- /.pcos-results -->
+</div><!-- /.pcos-page -->
+
+<!-- ── Styles ──────────────────────────────────────────────────────────── -->
+<style>
+.pcos-page { max-width: 680px; margin: 2rem auto; padding: 0 1rem 4rem; }
+.pcos-progress-wrap { display: flex; align-items: center; gap: 12px; margin-bottom: 1.5rem; }
+.pcos-progress-bar { flex: 1; height: 4px; background: #f0e8f0; border-radius: 2px; }
+.pcos-progress-fill { height: 100%; background: #c2506a; border-radius: 2px; transition: width 0.35s ease; }
+.pcos-step-counter { font-size: 13px; color: #999; white-space: nowrap; }
+.pcos-card { background: #fff; border: 1px solid #f0e0e8; border-radius: 16px; padding: 2rem; margin-bottom: 2rem; }
+.pcos-step { display: none; }
+.pcos-step.active { display: block; }
+.pcos-q-label { font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: #c2506a; margin-bottom: 6px; }
+.pcos-q-title { font-size: 22px; font-weight: 600; color: #2a1a2e; margin-bottom: 1.5rem; line-height: 1.3; }
+.pcos-age-wrap { display: flex; align-items: baseline; justify-content: center; gap: 10px; padding: 1rem 0 1.5rem; }
+.pcos-age-input { font-size: 36px; font-weight: 600; border: none; border-bottom: 2px solid #e0cce6; background: transparent; color: #2a1a2e; width: 100px; text-align: center; outline: none; }
+.pcos-age-input:focus { border-bottom-color: #c2506a; }
+.pcos-age-unit { font-size: 18px; color: #999; }
+.pcos-options { display: flex; flex-direction: column; gap: 10px; }
+.pcos-opt { display: flex; align-items: center; gap: 12px; padding: 14px 16px; border: 1px solid #ede0f0; border-radius: 12px; cursor: pointer; font-size: 15px; color: #2a1a2e; transition: all 0.15s; background: #fff; }
+.pcos-opt:hover { border-color: #c2506a; background: #fdf5f8; }
+.pcos-opt.selected { border-color: #c2506a; background: #fdf5f8; color: #7a1535; font-weight: 500; }
+.pcos-opt-icon { width: 32px; height: 32px; border-radius: 50%; background: #f5eef8; display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0; }
+.pcos-opt.selected .pcos-opt-icon { background: #f5ccd8; }
+.pcos-multi-hint { font-size: 12px; color: #aaa; margin-bottom: 0.75rem; }
+.pcos-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.pcos-chip { padding: 9px 16px; border: 1px solid #ede0f0; border-radius: 24px; font-size: 14px; color: #2a1a2e; cursor: pointer; transition: all 0.15s; background: #fff; }
+.pcos-chip:hover { border-color: #c2506a; }
+.pcos-chip.selected { background: #fdf5f8; border-color: #c2506a; color: #7a1535; }
+.pcos-chip-none { color: #aaa; }
+.pcos-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 2rem; }
+.pcos-btn { padding: 10px 24px; border-radius: 8px; border: 1px solid #ddd; background: #fff; color: #333; font-size: 14px; cursor: pointer; font-family: inherit; transition: all 0.15s; text-decoration: none; display: inline-block; }
+.pcos-btn:hover { background: #f5f5f5; }
+.pcos-btn-primary { background: #c2506a; border-color: #c2506a; color: #fff; }
+.pcos-btn-primary:hover { background: #a03d55; border-color: #a03d55; }
+.pcos-loading { text-align: center; padding: 3rem 0; color: #999; }
+.pcos-spinner { width: 36px; height: 36px; border: 3px solid #f0e0e8; border-top-color: #c2506a; border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 1rem; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.pcos-error { text-align: center; padding: 2rem; color: #c00; }
+/* Results */
+.pcos-result-header { text-align: center; margin-bottom: 2rem; }
+.pcos-score-ring { position: relative; width: 120px; height: 120px; margin: 0 auto 1rem; }
+.pcos-score-num { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); font-size: 30px; font-weight: 700; color: #2a1a2e; }
+.pcos-risk-badge { display: inline-block; padding: 5px 18px; border-radius: 20px; font-size: 13px; font-weight: 600; margin-bottom: 0.75rem; }
+.pcos-risk-badge.low  { background: #eaf6e8; color: #2d6b1e; }
+.pcos-risk-badge.moderate { background: #fff5e0; color: #8a5500; }
+.pcos-risk-badge.high { background: #fdeaea; color: #8a1515; }
+.pcos-risk-msg { font-size: 15px; color: #666; max-width: 520px; margin: 0 auto 0.5rem; line-height: 1.6; }
+.pcos-disclaimer { font-size: 12px; color: #bbb; margin-top: 0.5rem; }
+.pcos-section-title { font-size: 15px; font-weight: 600; color: #2a1a2e; margin: 2rem 0 0.75rem; display: flex; align-items: center; gap: 10px; }
+.pcos-section-title::after { content: ''; flex: 1; height: 1px; background: #f0e0e8; }
+.pcos-section-sub { font-size: 13px; color: #999; margin-bottom: 1rem; }
+.pcos-source-tag { font-size: 11px; font-weight: 400; background: #f5eef8; color: #c2506a; padding: 2px 8px; border-radius: 12px; }
+.pcos-flags { display: flex; flex-wrap: wrap; gap: 6px; }
+.pcos-flag { background: #fdf5f8; border: 1px solid #f5ccd8; border-radius: 16px; padding: 4px 12px; font-size: 12px; color: #7a1535; }
+.pcos-nutrient-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 10px; margin-bottom: 0.5rem; }
+.pcos-n-card { background: #fff; border: 1px solid #f0e0e8; border-radius: 12px; padding: 12px 14px; }
+.pcos-n-name { font-size: 11px; color: #999; margin-bottom: 4px; }
+.pcos-n-val { font-size: 19px; font-weight: 700; color: #2a1a2e; }
+.pcos-n-unit { font-size: 11px; color: #bbb; }
+.pcos-n-bar-wrap { margin-top: 6px; height: 4px; background: #f5eef8; border-radius: 2px; }
+.pcos-n-bar { height: 100%; border-radius: 2px; }
+.pcos-n-status { font-size: 11px; margin-top: 4px; }
+.pcos-nhanes-note { font-size: 11px; color: #bbb; margin: 0.5rem 0 2rem; }
+.pcos-food-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 2rem; }
+.pcos-food-item { background: #fdf5f8; border-left: 3px solid #c2506a; border-radius: 8px; padding: 14px 16px; }
+.pcos-food-item.lifestyle { border-left-color: #8e44ad; background: #f9f5fe; }
+.pcos-food-item.decrease { border-left-color: #e74c3c; background: #fdf5f5; }
+.pcos-food-title { font-size: 14px; font-weight: 600; color: #2a1a2e; margin-bottom: 6px; }
+.pcos-food-list-items { font-size: 13px; color: #555; line-height: 1.7; margin-bottom: 4px; }
+.pcos-food-tip { font-size: 12px; color: #999; font-style: italic; }
+.pcos-result-footer { display: flex; gap: 12px; justify-content: center; margin-top: 2rem; flex-wrap: wrap; }
+</style>
+
+<!-- ── Client-side JS ──────────────────────────────────────────────────── -->
+<script>
+const TOTAL_STEPS = 6;
+const state = {
+  age: null, cycleGap: null, cycSym: [], physSym: [], activity: null, diet: null
+};
+
+function showStep(n) {
+  document.querySelectorAll('.pcos-step').forEach(s => s.classList.remove('active'));
+  document.getElementById(typeof n === 'string' ? n : 's' + n).classList.add('active');
+  const cur = typeof n === 'number' ? n + 1 : TOTAL_STEPS;
+  document.getElementById('stepCounter').textContent = `Step ${Math.min(cur, TOTAL_STEPS)} of ${TOTAL_STEPS}`;
+  document.getElementById('progFill').style.width = (Math.min(cur, TOTAL_STEPS) / TOTAL_STEPS * 100) + '%';
+  document.getElementById('assessCard').style.display = 'block';
+  document.getElementById('resultsSection').style.display = 'none';
+}
+
+function goNext(cur) {
+  if (cur === 0) {
+    const v = parseInt(document.getElementById('ageIn').value, 10);
+    if (!v || v < 10 || v > 80) { document.getElementById('ageIn').focus(); return; }
+    state.age = v;
+  }
+  showStep(cur + 1);
+}
+function goBack(cur) { showStep(cur - 1); }
+
+function pick(el, key, val) {
+  el.closest('.pcos-options').querySelectorAll('.pcos-opt').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  state[key] = val;
+}
+
+function toggleChip(el, key, val) {
+  if (!state[key]) state[key] = [];
+  if (el.classList.contains('selected')) {
+    el.classList.remove('selected');
+    state[key] = state[key].filter(v => v !== val);
+  } else {
+    el.classList.add('selected');
+    if (!state[key].includes(val)) state[key].push(val);
+  }
+}
+
+function clearChips(key, noneEl) {
+  noneEl.closest('.pcos-chips').querySelectorAll('.pcos-chip').forEach(c => c.classList.remove('selected'));
+  state[key] = [];
+}
+
+async function submitAssessment() {
+  showStep('sLoading');
+
+  const payload = {
+    age:       state.age,
+    cycleGap:  state.cycleGap  || 'normal',
+    cycSym:    state.cycSym    || [],
+    physSym:   state.physSym   || [],
+    activity:  state.activity  || 'light',
+    diet:      state.diet      || 'balanced',
+  };
+
+  try {
+    const res  = await fetch('/pcos/assess', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify(payload),
+    });
+
+    if (!res.ok) throw new Error((await res.json()).error || 'Server error');
+
+    const { risk, dietPlan } = await res.json();
+    renderResults(risk, dietPlan);
+
+  } catch (err) {
+    document.getElementById('errorMsg').textContent = err.message || 'Something went wrong.';
+    showStep('sError');
+  }
+}
+
+function renderResults(risk, dietPlan) {
+  // Hide form card, show results
+  document.getElementById('assessCard').style.display = 'none';
+  document.getElementById('resultsSection').style.display = 'block';
+  document.getElementById('progFill').style.width = '100%';
+  document.getElementById('stepCounter').textContent = 'Results';
+
+  // Score ring
+  const offset = 327 - (327 * risk.score / 100);
+  document.getElementById('ringArc').setAttribute('stroke-dashoffset', offset);
+  document.getElementById('scoreNum').textContent = risk.score;
+
+  // Badge + message
+  const badge = document.getElementById('riskBadge');
+  badge.textContent = risk.level === 'high' ? 'High risk' : risk.level === 'moderate' ? 'Moderate risk' : 'Low risk';
+  badge.className   = 'pcos-risk-badge ' + risk.level;
+  document.getElementById('riskMsg').textContent = risk.message;
+
+  // Flags
+  if (risk.flags && risk.flags.length) {
+    document.getElementById('flagsWrap').style.display = 'block';
+    document.getElementById('flagsList').innerHTML =
+      risk.flags.map(f => `<span class="pcos-flag">${f}</span>`).join('');
+  }
+
+  // Nutrient cards
+  const STATUS_COLOR = { ok: '#639922', low: '#e8a020', deficient: '#e24b4a', high: '#e8a020', excess: '#e24b4a' };
+  const STATUS_LABEL = { ok: 'On target', low: 'Below target', deficient: 'Deficient', high: 'Above limit', excess: 'Well above limit' };
+
+  document.getElementById('nutrientGrid').innerHTML = dietPlan.summary.map(n => {
+    const barColor = STATUS_COLOR[n.status] || '#aaa';
+    const barWidth = Math.max(4, n.pct);
+    const valStr   = n.current !== null ? (n.current % 1 === 0 ? n.current : n.current.toFixed(1)) : 'N/A';
+    return `<div class="pcos-n-card">
+      <div class="pcos-n-name">${n.label}</div>
+      <div><span class="pcos-n-val">${valStr}</span> <span class="pcos-n-unit">${n.unit}/day</span></div>
+      <div class="pcos-n-bar-wrap"><div class="pcos-n-bar" style="width:${barWidth}%;background:${barColor}"></div></div>
+      <div class="pcos-n-status" style="color:${barColor}">${STATUS_LABEL[n.status] || ''}</div>
+    </div>`;
+  }).join('');
+
+  // Food recommendations
+  document.getElementById('foodList').innerHTML = dietPlan.recommendations.map(r => {
+    if (r.direction === 'lifestyle') {
+      return `<div class="pcos-food-item lifestyle">
+        <div class="pcos-food-title">${r.title}</div>
+        <div class="pcos-food-list-items">${r.body}</div>
+      </div>`;
+    }
+    const cls = r.direction === 'decrease' ? 'decrease' : '';
+    const arrow = r.direction === 'increase' ? '↑' : '↓';
+    const foods = Array.isArray(r.foods) ? r.foods.map(f => `• ${f}`).join('<br>') : '';
+    return `<div class="pcos-food-item ${cls}">
+      <div class="pcos-food-title">${arrow} ${r.nutrient} <span style="font-size:12px;font-weight:400;color:#999">(${r.status})</span></div>
+      <div class="pcos-food-list-items">${foods}</div>
+      ${r.tip ? `<div class="pcos-food-tip">${r.tip}</div>` : ''}
+    </div>`;
+  }).join('');
+}
+
+function restartAssessment() {
+  Object.assign(state, { age: null, cycleGap: null, cycSym: [], physSym: [], activity: null, diet: null });
+  document.querySelectorAll('.pcos-opt').forEach(o => o.classList.remove('selected'));
+  document.querySelectorAll('.pcos-chip').forEach(c => c.classList.remove('selected'));
+  document.getElementById('ageIn').value = '';
+  showStep(0);
+}
+
+// Init
+showStep(0);
+</script>
+
+<%- include('partials/footer') %>

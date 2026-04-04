@@ -1,78 +1,16 @@
 <%- include('partials/header') %>
 <%- include('partials/navbar') %>
 
-<style>
-:root{--lav-50:#f5f0ff;--lav-100:#ede5ff;--lav-200:#d9ccff;--lav-300:#bfa8ff;--lav-400:#a080ff;--lav-500:#8b5cf6;--lav-600:#7c3aed;--lav-700:#6d28d9;--rose:#f472b6;--rose-lt:#fce7f3;--bg:#faf8ff;--surface:#fff;--border:#e8deff;--text:#2d1b5e;--text-muted:#7c6fa0;--shadow:0 4px 24px rgba(139,92,246,0.10);--radius:16px;--radius-sm:10px;}
-*,*::before,*::after{box-sizing:border-box;}
-body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(--text);}
-.page-container{max-width:860px;margin:0 auto;padding:2rem 1.5rem;}
-.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem;box-shadow:var(--shadow);margin-bottom:1.25rem;}
-.page-title{font-size:1.4rem;font-weight:800;color:var(--text);margin-bottom:0.25rem;}
-.page-sub{font-size:0.88rem;color:var(--text-muted);margin-bottom:1.25rem;}
-
-/* search */
-.search-form{margin-top:1rem;}
-.search-row{display:flex;gap:0.75rem;}
-.search-input{flex:1;padding:0.75rem 1rem;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:inherit;font-size:0.9rem;background:var(--surface);color:var(--text);outline:none;transition:border-color 0.2s,box-shadow 0.2s;}
-.search-input:focus{border-color:var(--lav-400);box-shadow:0 0 0 3px rgba(139,92,246,0.12);}
-
-/* section title */
-.section-title{display:flex;align-items:center;gap:0.5rem;font-size:0.95rem;font-weight:700;color:var(--text);margin:1.25rem 0 0.75rem;padding:0 2px;}
-.section-dot{width:8px;height:8px;border-radius:50%;background:linear-gradient(135deg,var(--lav-500),var(--lav-700));flex-shrink:0;}
-
-/* doctor grid */
-.doctor-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1rem;margin-bottom:1.25rem;}
-.doctor-card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius);padding:1.25rem;display:flex;gap:1rem;align-items:flex-start;transition:all 0.2s;box-shadow:var(--shadow);}
-.doctor-card:hover{border-color:var(--lav-400);transform:translateY(-2px);box-shadow:0 8px 32px rgba(139,92,246,0.12);}
-.doctor-avatar{width:50px;height:50px;border-radius:50%;background:linear-gradient(135deg,var(--lav-400),var(--lav-700));display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:1.2rem;flex-shrink:0;}
-.doctor-info{flex:1;}
-.doctor-name{font-size:1rem;font-weight:700;color:var(--text);margin-bottom:0.2rem;}
-.doctor-specialty{display:inline-block;background:var(--lav-100);color:var(--lav-700);padding:0.2rem 0.6rem;border-radius:99px;font-size:0.72rem;font-weight:600;margin-bottom:0.6rem;}
-.doctor-details{display:flex;flex-direction:column;gap:0.3rem;margin-bottom:0.75rem;}
-.doctor-detail-row{display:flex;align-items:flex-start;gap:0.5rem;font-size:0.82rem;color:var(--text-muted);}
-.detail-icon{flex-shrink:0;}
-.doctor-actions{display:flex;align-items:center;gap:0.5rem;}
-.btn-call{display:inline-flex;align-items:center;padding:0.4rem 0.9rem;border-radius:8px;font-size:0.82rem;font-weight:600;text-decoration:none;background:linear-gradient(135deg,var(--lav-500),var(--lav-700));color:white;transition:all 0.2s;}
-.btn-call:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(139,92,246,0.35);}
-.area-badge{background:var(--lav-50);color:var(--lav-700);padding:0.25rem 0.6rem;border-radius:99px;font-size:0.72rem;font-weight:600;border:1px solid var(--lav-200);}
-
-/* map */
-.map-card h3{font-size:1rem;font-weight:700;margin-bottom:0.25rem;}
-.map-link{display:inline-block;margin-top:0.75rem;font-size:0.82rem;color:var(--lav-600);font-weight:600;text-decoration:none;}
-.map-link:hover{text-decoration:underline;}
-
-/* empty */
-.empty-card{text-align:center;padding:3rem 1rem;}
-.empty-icon{font-size:2.5rem;margin-bottom:0.75rem;}
-.empty-card h3{font-size:1.1rem;font-weight:700;color:var(--text);margin-bottom:0.5rem;}
-.empty-card p{font-size:0.85rem;color:var(--text-muted);}
-
-/* resources */
-.resources-card{}
-.resources-title{font-size:1.05rem;font-weight:700;margin-bottom:1rem;}
-.resources-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:0.75rem;}
-.resource-item{display:flex;gap:0.75rem;align-items:flex-start;background:var(--lav-50);border:1px solid var(--lav-200);border-radius:var(--radius-sm);padding:0.9rem;}
-.resource-icon{font-size:1.5rem;flex-shrink:0;}
-.resource-item strong{display:block;font-size:0.88rem;font-weight:700;color:var(--text);margin-bottom:0.2rem;}
-.resource-item p{font-size:0.78rem;color:var(--text-muted);line-height:1.5;}
-
-/* btn */
-.btn-primary{display:inline-flex;align-items:center;gap:0.5rem;padding:0.65rem 1.4rem;border-radius:10px;font-size:0.9rem;font-weight:600;cursor:pointer;border:none;text-decoration:none;background:linear-gradient(135deg,var(--lav-500),var(--lav-700));color:white;box-shadow:0 2px 12px rgba(139,92,246,0.3);transition:all 0.22s;}
-.btn-primary:hover{transform:translateY(-1px);}
-
-@keyframes fadeUp{from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:translateY(0);}}
-.fade-up{animation:fadeUp 0.45s ease both;}
-@media(max-width:640px){.search-row{flex-direction:column;}.doctor-grid{grid-template-columns:1fr;}.resources-grid{grid-template-columns:1fr;}}
-</style>
-
 <div class="page-container">
 
-  <div class="card fade-up">
+  <div class="card">
     <h2 class="page-title">Find a gynecologist near you</h2>
     <p class="page-sub">Real doctors. Real help. Near you.</p>
+
     <form action="/doctor" method="GET" class="search-form">
       <div class="search-row">
-        <input type="text" name="city" value="<%= cityQuery %>" placeholder="Enter your city — e.g. Bhopal, Indore, Mumbai" class="search-input" />
+        <input type="text" name="city" value="<%= cityQuery %>"
+          placeholder="Enter your city — e.g. Bhopal, Indore, Mumbai" class="search-input" />
         <button type="submit" class="btn-primary">Search</button>
       </div>
     </form>
@@ -80,73 +18,217 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(-
 
   <% if (clinics.length > 0) { %>
 
-  <div class="section-title fade-up">
-    <div class="section-dot"></div>
+  <div class="section-title">
+    <span class="section-dot"></span>
     <%= clinics.length %> doctors found near <%= cityQuery %>
   </div>
 
-  <div class="doctor-grid fade-up">
-    <% clinics.forEach(clinic => { %>
-    <div class="doctor-card">
+  <div class="doctor-grid">
+    <% clinics.forEach((clinic, index) => { %>
+    <div
+      class="doctor-card <%= index === 0 ? 'active-doctor' : '' %>"
+      onclick="selectDoctor(this, <%= clinic.lat || lat %>, <%= clinic.lng || lng %>, '<%= clinic.name.replace(/'/g, "\\'") %>', '<%= clinic.area.replace(/'/g, "\\'") %>')"
+      data-lat="<%= clinic.lat || lat %>"
+      data-lng="<%= clinic.lng || lng %>"
+      data-name="<%= clinic.name %>"
+      data-area="<%= clinic.area %>"
+    >
       <div class="doctor-avatar"><%= clinic.name.charAt(3) %></div>
       <div class="doctor-info">
         <h3 class="doctor-name"><%= clinic.name %></h3>
         <span class="doctor-specialty"><%= clinic.specialty %></span>
         <div class="doctor-details">
-          <div class="doctor-detail-row"><span class="detail-icon">🏥</span><span><%= clinic.hospital %></span></div>
-          <div class="doctor-detail-row"><span class="detail-icon">📍</span><span><%= clinic.address %></span></div>
-          <div class="doctor-detail-row"><span class="detail-icon">📞</span><span><%= clinic.phone %></span></div>
+          <div class="doctor-detail-row">
+            <span class="detail-icon">🏥</span>
+            <span><%= clinic.hospital %></span>
+          </div>
+          <div class="doctor-detail-row">
+            <span class="detail-icon">📍</span>
+            <span><%= clinic.address %></span>
+          </div>
+          <div class="doctor-detail-row">
+            <span class="detail-icon">📞</span>
+            <span><%= clinic.phone %></span>
+          </div>
         </div>
         <div class="doctor-actions">
-          <a href="tel:<%= clinic.phone %>" class="btn-call">Call Now</a>
+          <a href="tel:<%= clinic.phone %>" class="btn-call" onclick="event.stopPropagation()">Call Now</a>
           <span class="area-badge"><%= clinic.area %></span>
         </div>
       </div>
+
+      <!-- Selected indicator -->
+      <div class="selected-indicator">📍 Showing on map</div>
     </div>
     <% }) %>
   </div>
 
+  <!-- Map Section — updates dynamically when a doctor is clicked -->
   <% if (lat && lng) { %>
-  <div class="card map-card fade-up">
-    <h3>Map view — <%= cityQuery %></h3>
-    <iframe width="100%" height="360" style="border:none;border-radius:12px;margin-top:12px;"
-      src="https://www.openstreetmap.org/export/embed.html?bbox=<%= lng-0.08 %>,<%= lat-0.08 %>,<%= lng+0.08 %>,<%= lat+0.08 %>&layer=mapnik&marker=<%= lat %>,<%= lng %>"></iframe>
-    <a href="https://www.openstreetmap.org/?mlat=<%= lat %>&mlon=<%= lng %>#map=13/<%= lat %>/<%= lng %>" target="_blank" class="map-link">Open full map →</a>
+  <div class="card map-card" id="map-card">
+    <div class="map-header">
+      <h3 id="map-title">📍 <span id="map-doctor-name"><%= clinics[0] ? clinics[0].name : cityQuery %></span></h3>
+      <span id="map-area-badge" class="map-area-label"><%= clinics[0] ? clinics[0].area : cityQuery %></span>
+    </div>
+
+    <iframe
+      id="map-frame"
+      width="100%"
+      height="400"
+      style="border:none; border-radius:12px; margin-top:14px;"
+      src="https://www.openstreetmap.org/export/embed.html?bbox=<%= (clinics[0] ? (clinics[0].lng || lng) : lng) - 0.015 %>,<%= (clinics[0] ? (clinics[0].lat || lat) : lat) - 0.015 %>,<%= (clinics[0] ? (clinics[0].lng || lng) : lng) + 0.015 %>,<%= (clinics[0] ? (clinics[0].lat || lat) : lat) + 0.015 %>&layer=mapnik&marker=<%= clinics[0] ? (clinics[0].lat || lat) : lat %>,<%= clinics[0] ? (clinics[0].lng || lng) : lng %>"
+    ></iframe>
+
+    <a id="map-open-link"
+      href="https://www.openstreetmap.org/?mlat=<%= clinics[0] ? (clinics[0].lat || lat) : lat %>&mlon=<%= clinics[0] ? (clinics[0].lng || lng) : lng %>#map=16/<%= clinics[0] ? (clinics[0].lat || lat) : lat %>/<%= clinics[0] ? (clinics[0].lng || lng) : lng %>"
+      target="_blank" class="map-link">Open full map →</a>
   </div>
   <% } %>
 
   <% } else if (cityQuery) { %>
-  <div class="card empty-card fade-up">
+  <div class="card empty-card">
     <div class="empty-icon">🔍</div>
     <h3>No results for "<%= cityQuery %>"</h3>
     <p>We currently have data for Bhopal and Indore. More cities coming soon.</p>
-    <p style="margin-top:6px;font-size:0.78rem;color:#aaa;">Try searching "Bhopal" or "Indore"</p>
+    <p style="margin-top:8px; font-size:13px; color:#aaa;">Try searching "Bhopal" or "Indore"</p>
   </div>
   <% } %>
 
-  <!-- Free Resources -->
-  <div class="card resources-card fade-up">
-    <h3 class="resources-title">🏛️ Free government health resources</h3>
+  <!-- Free resources -->
+  <div class="card resources-card">
+    <h3 class="resources-title">Free government health resources</h3>
     <div class="resources-grid">
       <div class="resource-item">
         <div class="resource-icon">🏛️</div>
-        <div><strong>PMJAY — Ayushman Bharat</strong><p>Free health coverage up to ₹5 lakh/year for eligible families.</p></div>
+        <div>
+          <strong>PMJAY — Ayushman Bharat</strong>
+          <p>Free health coverage up to ₹5 lakh/year for eligible families.</p>
+        </div>
       </div>
       <div class="resource-item">
         <div class="resource-icon">🤱</div>
-        <div><strong>Janani Suraksha Yojana</strong><p>Free maternal health at all government hospitals.</p></div>
+        <div>
+          <strong>Janani Suraksha Yojana</strong>
+          <p>Free maternal health at all government hospitals.</p>
+        </div>
       </div>
       <div class="resource-item">
         <div class="resource-icon">📱</div>
-        <div><strong>National Health Helpline: 104</strong><p>Free medical advice, available in Hindi and English.</p></div>
+        <div>
+          <strong>National Health Helpline: 104</strong>
+          <p>Free medical advice, available in Hindi and English.</p>
+        </div>
       </div>
       <div class="resource-item">
         <div class="resource-icon">🩺</div>
-        <div><strong>Hamidia Hospital, Bhopal</strong><p>Free OPD for women. Gynecology dept open Mon–Sat, 9am–1pm.</p></div>
+        <div>
+          <strong>Hamidia Hospital, Bhopal</strong>
+          <p>Free OPD for women. Gynecology dept open Mon–Sat, 9am–1pm.</p>
+        </div>
       </div>
     </div>
   </div>
 
 </div>
+
+<!-- ✅ JavaScript: updates map when a doctor card is clicked -->
+<script>
+  function selectDoctor(cardEl, lat, lng, name, area) {
+    // Remove active class from all cards
+    document.querySelectorAll('.doctor-card').forEach(c => c.classList.remove('active-doctor'));
+
+    // Add active class to clicked card
+    cardEl.classList.add('active-doctor');
+
+    // Update map iframe src to point to this doctor's location
+    const zoom = 0.008; // tighter zoom — shows the specific area
+    const bbox = `${lng - zoom},${lat - zoom},${lng + zoom},${lat + zoom}`;
+    const mapSrc = `https://www.openstreetmap.org/export/embed.html?bbox=${bbox}&layer=mapnik&marker=${lat},${lng}`;
+
+    document.getElementById('map-frame').src = mapSrc;
+
+    // Update map title and area label
+    document.getElementById('map-doctor-name').textContent = name;
+    document.getElementById('map-area-badge').textContent = area;
+
+    // Update "Open full map" link
+    document.getElementById('map-open-link').href =
+      `https://www.openstreetmap.org/?mlat=${lat}&mlon=${lng}#map=16/${lat}/${lng}`;
+
+    // Scroll to map smoothly
+    document.getElementById('map-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+</script>
+
+<!-- ✅ Styles for active card + map header -->
+<style>
+  .doctor-card {
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 2px solid transparent;
+    position: relative;
+  }
+
+  .doctor-card:hover {
+    border-color: #f472b6;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(244, 114, 182, 0.15);
+  }
+
+  .doctor-card.active-doctor {
+    border-color: #ec4899;
+    background: linear-gradient(135deg, rgba(236, 72, 153, 0.06), rgba(168, 85, 247, 0.04));
+    box-shadow: 0 8px 28px rgba(236, 72, 153, 0.2);
+  }
+
+  .selected-indicator {
+    display: none;
+    font-size: 11px;
+    color: #ec4899;
+    font-weight: 600;
+    margin-top: 8px;
+    letter-spacing: 0.3px;
+  }
+
+  .doctor-card.active-doctor .selected-indicator {
+    display: block;
+  }
+
+  .map-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .map-header h3 {
+    margin: 0;
+    font-size: 16px;
+  }
+
+  .map-area-label {
+    background: linear-gradient(135deg, #ec4899, #a855f7);
+    color: white;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 20px;
+    letter-spacing: 0.3px;
+  }
+
+  .map-link {
+    display: inline-block;
+    margin-top: 10px;
+    font-size: 13px;
+    color: #ec4899;
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  .map-link:hover {
+    text-decoration: underline;
+  }
+</style>
 
 <%- include('partials/footer') %>

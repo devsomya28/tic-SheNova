@@ -1,0 +1,934 @@
+<%- include('partials/header') %>
+<%- include('partials/navbar') %>
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+  .faq-page {
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    padding-bottom: 80px;
+    background: #fafafa;
+  }
+
+  /* ── Hero ── */
+  .faq-hero {
+    background: linear-gradient(135deg, #0f172a 0%, #1e1035 45%, #4c1d95 100%);
+    padding: 52px 24px 44px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .faq-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 15% 60%, rgba(244,114,182,0.16) 0%, transparent 55%),
+      radial-gradient(ellipse at 85% 25%, rgba(167,139,250,0.2) 0%, transparent 50%),
+      radial-gradient(ellipse at 50% 100%, rgba(236,72,153,0.1) 0%, transparent 40%);
+    pointer-events: none;
+  }
+
+  .faq-hero-tag {
+    display: inline-block;
+    background: rgba(244,114,182,0.15);
+    border: 1px solid rgba(244,114,182,0.35);
+    color: #fbb6ce;
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    padding: 5px 18px;
+    border-radius: 20px;
+    margin-bottom: 16px;
+  }
+
+  .faq-hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(26px, 5vw, 44px);
+    font-weight: 700;
+    color: #fff;
+    margin: 0 0 12px;
+    line-height: 1.25;
+  }
+
+  .faq-hero h1 em {
+    color: #f472b6;
+    font-style: italic;
+  }
+
+  .faq-hero p {
+    color: #c4b5fd;
+    font-size: 14.5px;
+    max-width: 480px;
+    margin: 0 auto 28px;
+    line-height: 1.7;
+    font-weight: 300;
+  }
+
+  /* ── Search Box ── */
+  .faq-search-wrap {
+    max-width: 480px;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  .faq-search {
+    width: 100%;
+    padding: 14px 20px 14px 46px;
+    border-radius: 50px;
+    border: none;
+    font-size: 14px;
+    font-family: 'DM Sans', sans-serif;
+    outline: none;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.3);
+    color: #1e293b;
+    box-sizing: border-box;
+  }
+
+  .faq-search::placeholder { color: #94a3b8; }
+
+  .search-icon {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 17px;
+    pointer-events: none;
+  }
+
+  .faq-hero-stats {
+    display: flex;
+    justify-content: center;
+    gap: 28px;
+    margin-top: 28px;
+    flex-wrap: wrap;
+  }
+
+  .faq-hero-stat strong {
+    display: block;
+    font-size: 22px;
+    font-weight: 700;
+    color: #f472b6;
+    font-family: 'Playfair Display', serif;
+  }
+
+  .faq-hero-stat span {
+    font-size: 10.5px;
+    color: #a78bfa;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  /* ── Filter Tabs ── */
+  .faq-filter-bar {
+    display: flex;
+    gap: 9px;
+    padding: 28px 24px 0;
+    max-width: 1000px;
+    margin: 0 auto;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .faq-filter-btn {
+    padding: 7px 18px;
+    border-radius: 24px;
+    border: 1.5px solid #e2e8f0;
+    background: white;
+    color: #64748b;
+    font-size: 12.5px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: 'DM Sans', sans-serif;
+    white-space: nowrap;
+  }
+
+  .faq-filter-btn:hover {
+    border-color: #f472b6;
+    color: #ec4899;
+  }
+
+  .faq-filter-btn.active {
+    background: linear-gradient(135deg, #ec4899, #8b5cf6);
+    border-color: transparent;
+    color: white;
+    box-shadow: 0 4px 14px rgba(236,72,153,0.28);
+  }
+
+  /* ── FAQ Container ── */
+  .faq-container {
+    max-width: 820px;
+    margin: 30px auto 0;
+    padding: 0 24px;
+  }
+
+  /* ── Section Label ── */
+  .faq-section-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #94a3b8;
+    margin: 36px 0 14px;
+  }
+
+  .faq-section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: #e2e8f0;
+  }
+
+  /* ── Accordion Item ── */
+  .faq-item {
+    background: white;
+    border-radius: 14px;
+    border: 1.5px solid #f1f5f9;
+    margin-bottom: 10px;
+    overflow: hidden;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    animation: fadeUp 0.35s ease both;
+  }
+
+  .faq-item:hover {
+    border-color: #f9a8d4;
+  }
+
+  .faq-item.faq-open {
+    border-color: #ec4899;
+    box-shadow: 0 6px 24px rgba(236,72,153,0.1);
+  }
+
+  .faq-item.faq-hidden {
+    display: none;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── Question Button ── */
+  .faq-question {
+    width: 100%;
+    background: none;
+    border: none;
+    text-align: left;
+    padding: 18px 20px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .faq-q-icon {
+    font-size: 20px;
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    background: var(--q-bg, #fdf4ff);
+  }
+
+  .faq-q-text {
+    flex: 1;
+    font-size: 14.5px;
+    font-weight: 600;
+    color: #1e293b;
+    line-height: 1.4;
+  }
+
+  .faq-chevron {
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: #f8fafc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s ease, background 0.2s;
+    font-size: 11px;
+    color: #94a3b8;
+  }
+
+  .faq-open .faq-chevron {
+    transform: rotate(180deg);
+    background: linear-gradient(135deg, #ec4899, #8b5cf6);
+    color: white;
+  }
+
+  /* ── Answer Panel ── */
+  .faq-answer {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.35s ease;
+  }
+
+  .faq-answer-inner {
+    padding: 0 20px 20px 74px;
+    font-size: 14px;
+    color: #475569;
+    line-height: 1.75;
+    border-top: 1px solid #f8fafc;
+  }
+
+  .faq-answer-inner .answer-highlight {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    background: linear-gradient(135deg, rgba(236,72,153,0.07), rgba(139,92,246,0.06));
+    border-left: 3px solid #ec4899;
+    border-radius: 0 8px 8px 0;
+    padding: 10px 14px;
+    margin-top: 10px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #374151;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* ── No results ── */
+  .faq-no-results {
+    text-align: center;
+    padding: 60px 20px;
+    display: none;
+  }
+
+  .faq-no-results.visible { display: block; }
+
+  .faq-no-results .no-icon { font-size: 40px; margin-bottom: 12px; }
+  .faq-no-results h3 { color: #374151; margin: 0 0 8px; font-size: 16px; }
+  .faq-no-results p { color: #94a3b8; font-size: 13px; }
+
+  /* ── Bottom CTA ── */
+  .faq-cta {
+    max-width: 820px;
+    margin: 48px auto 0;
+    padding: 0 24px;
+  }
+
+  .faq-cta-inner {
+    background: linear-gradient(135deg, #1a0a2e, #4c1d95);
+    border-radius: 20px;
+    padding: 32px 28px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .faq-cta-inner::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 30% 50%, rgba(244,114,182,0.15) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  .faq-cta-inner h3 {
+    font-family: 'Playfair Display', serif;
+    color: white;
+    font-size: 20px;
+    margin: 0 0 8px;
+  }
+
+  .faq-cta-inner p {
+    color: #c4b5fd;
+    font-size: 13.5px;
+    margin: 0 0 20px;
+  }
+
+  .faq-cta-btn {
+    display: inline-block;
+    background: linear-gradient(135deg, #ec4899, #8b5cf6);
+    color: white;
+    text-decoration: none;
+    font-size: 13.5px;
+    font-weight: 600;
+    padding: 11px 28px;
+    border-radius: 50px;
+    box-shadow: 0 4px 18px rgba(236,72,153,0.35);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .faq-cta-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(236,72,153,0.4);
+    color: white;
+    text-decoration: none;
+  }
+
+  @media (max-width: 600px) {
+    .faq-hero { padding: 40px 16px 36px; }
+    .faq-filter-bar { gap: 7px; }
+    .faq-filter-btn { font-size: 11.5px; padding: 6px 13px; }
+    .faq-answer-inner { padding-left: 20px; }
+  }
+</style>
+
+<div class="faq-page">
+
+  <!-- Hero -->
+  <div class="faq-hero">
+    <div class="faq-hero-tag">Women's Health · Herlytics</div>
+    <h1>Your Questions,<br><em>Simply Answered</em></h1>
+    <p>Real answers to real questions about periods, PCOS, pregnancy, and more — in plain language.</p>
+
+    <div class="faq-search-wrap">
+      <span class="search-icon">🔍</span>
+      <input type="text" class="faq-search" id="faqSearch" placeholder="Search — e.g. PCOS, bloating, pregnancy…" oninput="searchFAQ(this.value)" />
+    </div>
+
+    <div class="faq-hero-stats">
+      <div class="faq-hero-stat"><strong>30</strong><span>Questions</span></div>
+      <div class="faq-hero-stat"><strong>7</strong><span>Topics</span></div>
+      <div class="faq-hero-stat"><strong>Simple</strong><span>Plain Language</span></div>
+    </div>
+  </div>
+
+  <!-- Filter Tabs -->
+  <div class="faq-filter-bar">
+    <button class="faq-filter-btn active" onclick="filterFAQ('all', this)">All Topics</button>
+    <button class="faq-filter-btn" onclick="filterFAQ('basics', this)">🩸 Period Basics</button>
+    <button class="faq-filter-btn" onclick="filterFAQ('pcos', this)">🔬 PCOS / PCOD</button>
+    <button class="faq-filter-btn" onclick="filterFAQ('pregnancy', this)">🤰 Pregnancy</button>
+    <button class="faq-filter-btn" onclick="filterFAQ('miscarriage', this)">💙 Miscarriage</button>
+    <button class="faq-filter-btn" onclick="filterFAQ('menopause', this)">🌡️ Menopause & Cancer</button>
+    <button class="faq-filter-btn" onclick="filterFAQ('fertility', this)">🌸 Fertility & Postpartum</button>
+    <button class="faq-filter-btn" onclick="filterFAQ('app', this)">📱 App Features</button>
+  </div>
+
+  <div class="faq-container">
+
+    <!-- ───────────── PERIOD BASICS ───────────── -->
+    <div class="faq-section-label" data-section="basics">🩸 Menstrual Basics</div>
+
+    <div class="faq-item" data-category="basics" data-keywords="dysmenorrhea cramps pain period belly">
+      <button class="faq-question" onclick="toggleFAQ(this)" style="--q-bg:#fdf4ff;">
+        <span class="faq-q-icon" style="--q-bg:#fdf4ff;">🤕</span>
+        <span class="faq-q-text">What is dysmenorrhea?</span>
+        <span class="faq-chevron">▼</span>
+      </button>
+      <div class="faq-answer">
+        <div class="faq-answer-inner">
+          Bad belly cramps that happen during your period. Many women experience this and it's completely normal — but severe pain isn't something you should just "push through."
+          <div class="answer-highlight">💡 Herlytics warns you early before cramps hit. Try a hot water bottle on your lower belly for relief.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="faq-item" data-category="basics" data-keywords="bloating nausea hormones sick period">
+      <button class="faq-question" onclick="toggleFAQ(this)">
+        <span class="faq-q-icon" style="--q-bg:#fff0f6;">🤢</span>
+        <span class="faq-q-text">Why do I get bloating and nausea during periods?</span>
+        <span class="faq-chevron">▼</span>
+      </button>
+      <div class="faq-answer">
+        <div class="faq-answer-inner">
+          Period hormones (prostaglandins) cause your stomach to swell and can make you feel sick. It usually passes after the first 1–2 days.
+          <div class="answer-highlight">💡 Ginger water helps a lot. Log your symptoms daily in the app so it can spot your pattern.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="faq-item" data-category="basics" data-keywords="heavy bleeding anemia tired iron spinach">
+      <button class="faq-question" onclick="toggleFAQ(this)">
+        <span class="faq-q-icon" style="--q-bg:#fff1f2;">🩸</span>
+        <span class="faq-q-text">Can heavy bleeding cause anemia?</span>
+        <span class="faq-chevron">▼</span>
+      </button>
+      <div class="faq-answer">
+        <div class="faq-answer-inner">
+          Yes. If you're losing too much blood every month, your iron levels drop and you'll feel constantly tired, dizzy, or short of breath. Many women don't even realise this is the cause.
+          <div class="answer-highlight">💡 Log "heavy flow" in the app — it will remind you to eat iron-rich foods like spinach, dal, and jaggery.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="faq-item" data-category="basics" data-keywords="irregular periods warning PCOS short long cycle">
+      <button class="faq-question" onclick="toggleFAQ(this)">
+        <span class="faq-q-icon" style="--q-bg:#f0fdf4;">⚠️</span>
+        <span class="faq-q-text">What are warning signs of irregular periods?</span>
+        <span class="faq-chevron">▼</span>
+      </button>
+      <div class="faq-answer">
+        <div class="faq-answer-inner">
+          Cycles shorter than 21 days or longer than 35 days consistently can be a sign of PCOS, thyroid issues, or hormonal imbalance. One late period is usually fine — a pattern is the concern.
+          <div class="answer-highlight">💡 The app alerts you in Hindi when your cycle pattern looks unusual.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="faq-item" data-category="basics" data-keywords="sleep diet pain worse lifestyle symptoms">
+      <button class="faq-question" onclick="toggleFAQ(this)">
+        <span class="faq-q-icon" style="--q-bg:#fffbeb;">😴</span>
+        <span class="faq-q-text">Does poor sleep and bad diet make period symptoms worse?</span>
+        <span class="faq-chevron">▼</span>
+      </button>
+      <div class="faq-answer">
+        <div class="faq-answer-inner">
+          Absolutely yes. Poor sleep raises cortisol (stress hormone) and junk food causes inflammation — both make cramps, mood swings, and fatigue significantly worse.
+          <div class="answer-highlight">💡 The app tracks your sleep score and gives simple meal ideas to reduce period pain naturally.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ───────────── PCOS / PCOD ───────────── -->
+    <div class="faq-section-label" data-section="pcos">🔬 PCOS / PCOD</div>
+
+    <div class="faq-item" data-category="pcos" data-keywords="PCOS PCOD difference diet hormones doctor">
+      <button class="faq-question" onclick="toggleFAQ(this)">
+        <span class="faq-q-icon" style="--q-bg:#fdf4ff;">🔬</span>
+        <span class="faq-q-text">What is the difference between PCOS and PCOD?</span>
+        <span class="faq-chevron">▼</span>
+      </button>
+      <div class="faq-answer">
+        <div class="faq-answer-inner">
+          PCOD (Polycystic Ovarian Disease) is milder — diet and lifestyle changes can often fix the cysts. PCOS (Polycystic Ovary Syndrome) is a hormonal disorder that often needs medical treatment. Both are very common in India.
+          <div class="answer-highlight">💡 Take the app quiz — it helps figure out which one you might have and what to do next.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="faq-item" data-category="pcos" data-keywords="PCOS periods painful late yoga track">
+      <button class="faq-question" onclick="toggleFAQ(this)">
+        <span class="faq-q-icon" style="--q-bg:#fdf4ff;">😣</span>
+        <span class="faq-q-text">Does PCOS make periods worse?</span>
+        <span class="faq-chevron">▼</span>
+      </button>
+      <div class="faq-answer">
+        <div class="faq-answer-inner">
+          Yes — PCOS periods are often super painful, very heavy, or very late (sometimes missing for months). The hormonal imbalance makes everything more intense.
+          <div class="answer-highlight">💡 The app tracks your PCOS symptoms over time and gives you a personalised yoga plan to manage them.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="faq-item" data-category="pcos" data-keywords="PCOS remedies tea yoga pills treatment">
+      <button class="faq-question" onclick="toggleFAQ(this)">
+        <span class="faq-q-icon" style="--q-bg:#ecfdf5;">🌿</span>
+        <span class="faq-q-text">What are PCOS remedies?</span>
+        <span class="faq-chevron">▼</span>
+      </button>
+      <div class="faq-answer">
+        <div class="faq-answer-inner">
+          Common approaches include spearmint tea (lowers androgens), yoga and light exercise, dietary changes (less sugar, more fibre), and in some cases medication prescribed by a doctor.
+          <div class="answer-highlight">💡 The app picks the right combination for your body type and tracks whether it's actually working.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="faq-item" data-category="pcos" data-keywords="PCOD lifestyle reverse diet walk 30 day">
+      <button class="faq-question" onclick="toggleFAQ(this)">
+        <span class="faq-q-icon" style="--q-bg:#eff6ff;">🚶‍♀️</span>
+        <span class="faq-q-text">Can lifestyle changes reverse PCOD?</span>
+        <span class="faq-chevron">▼</span>
+      </button>
+      <div class="faq-answer">
+        <div class="faq-answer-inner">
+          Yes, in many cases! Studies show that losing just 5–10% of body weight through diet and walking can significantly reduce PCOD symptoms and restore regular periods.
+          <div class="answer-highlight">💡 The app has a 30-day plan with daily walks, meals, and check-ins designed specifically for PCOD.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ───────────── PREGNANCY ───────────── -->
+    <div class="faq-section-label" data-section="pregnancy">🤰 Pregnancy Challenges</div>
+
+    <div class="faq-item" data-category="pregnancy" data-keywords="nausea swelling morning sick feet pregnancy">
+      <button class="faq-question" onclick="toggleFAQ(this)">
+        <span class="faq-q-icon" style="--q-bg:#fefce8;">🤰</span>
+        <span class="faq-q-text">Why do I feel nauseous and swollen during pregnancy?</span>
+        <span class="faq-chevron">▼</span>
+      </button>
+      <div class="faq-answer">
+        <div class="faq-answer-inner">
+          Morning sickness (nausea) is caused by the hCG hormone spiking in early pregnancy. Swollen feet happen because your body retains more water to support the baby — very normal but uncomfortable.
+          <div class="answer-highlight">💡 Eat small, frequent meals throughout the day. Keep your feet elevated when resting.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="faq-item" data-category="pregnancy" data-keywords="preeclampsia high blood pressure danger risk pregnancy">
+      <button class="faq-question" onclick="toggleFAQ(this)">
+        <span class="faq-q-icon" style="--q-bg:#fff1f2;">⚠️</span>
+        <span class="faq-q-text">What is preeclampsia and why is it high-risk?</span>
+        <span class="faq-chevron">▼</span>
+      </button>
+      <div class="faq-answer">
+        <div class="faq-answer-inner">
+          Preeclampsia is dangerously high blood pressure during pregnancy. It can harm both mother and baby and needs immediate medical attention — it's one of the leading causes of maternal death in India.
+          <div class="answer-highlight">💡 The wearable watch monitors your BP and automatically alerts you and the app to call a doctor if it spikes.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="faq-item" data-category="pregnancy" data-keywords="PCOS pregnancy diabetes sugar risk">
+      <button class="faq-question" onclick="toggleFAQ(this)">
+        <span class="faq-q-icon" style="--q-bg:#fdf4ff;">🍬</span>
+        <span class="faq-q-text">Does PCOS affect pregnancy?</span>
+        <span class="faq-chevron">▼</span>
+      </button>
+      <div class="faq-answer">
+        <div class="faq-answer-inner">
+          Yes — PCOS raises the risk of gestational diabetes (high blood sugar during pregnancy). With the right monitoring and diet, most women with PCOS have healthy pregnancies.
+          <div class="answer-highlight">💡 The app prompts daily blood sugar checks and adjusts your meal plan if readings go high.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="faq-item" data-category="pregnancy" data-keywords="fetal movement kicks baby count alert">
+      <button class="faq-question" onclick="toggleFAQ(this)">
+        <span class="faq-q-icon" style="--q-bg:#ecfdf5;">👶</span>
+        <span class="faq-q-text">How does fetal movement detection work?</span>
+        <span class="faq-chevron">▼</span>
+      </button>
+      <div class="faq-answer">
+        <div class="faq-answer-inner">
+          From around 28 weeks, babies should kick at least 10 times in 2 hours. Reduced movement can be a sign of distress and needs immediate attention.
+          <div class="answer-highlight">💡 The wearable band counts kicks automatically. If movement is too low, it immediately alerts the mom.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="faq-item" data-category="pregnancy" data-keywords="anemia iron nutrition plan food pregnancy">
+      <button class="faq-question" onclick="toggleFAQ(this)">
+        <span class="faq-q-icon" style="--q-bg:#fff7ed;">🥬</span>
+        <span class="faq-q-text">What is a good nutrition plan for anemia in pregnancy?</span>
+        <span class="faq-chevron">▼</span>
+      </button>
+      <div class="faq-answer">
+        <div class="faq-answer-inner">
+          Iron-rich foods like spinach, dates, jaggery, lentils, and beetroot. Pair them with Vitamin C (amla, lemon) to boost iron absorption. Stay well-hydrated throughout the day.
+          <div class="answer-highlight">💡 The app scans your fridge and creates iron-rich meal plans from whatever you have at home.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ───────────── MISCARRIAGE ───────────── -->
+    <div class="faq-section-label" data-section="miscarriage">💙 Miscarriage & Emotional Support</div>
+
+    <div class="faq-item" data-category="miscarriage" data-keywords="miscarriage bleeding sad emotional aftermath problems">
+      <button class="faq-question" onclick="toggleFAQ(this)">
+        <span class="faq-q-icon" style="--q-bg:#eff6ff;">💙</span>
+        <span class="faq-q-text">What happens after a miscarriage?</span>
+        <span class="faq-chevron">▼</span>
+      </button>
+      <div class="faq-answer">
+        <div class="faq-answer-inner">
+          Physically: bleeding, cramps, and hormonal changes for a few weeks. Emotionally: grief, sadness, guilt, and anxiety are all completely normal and real — don't let anyone dismiss your feelings.
+          <div class="answer-highlight">💡 The app connects you to support chat groups and does a daily mood check-in so you're never alone in this.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="faq-item" data-category="miscarriage" data-keywords="miscarriage support forum community helper">
+      <button class="faq-question" onclick="toggleFAQ(this)">
+        <span class="faq-q-icon" style="--q-bg:#fdf4ff;">🤝</span>
+        <span class="faq-q-text">Where can I find support after a miscarriage?</span>
+        <span class="faq-chevron">▼</span>
+      </button>
+      <div class="faq-answer">
+        <div class="faq-answer-inner">
+          You don't have to go through this alone. Community forums, peer support groups, and talking to someone who has experienced the same can help enormously during recovery.
+          <div class="answer-highlight">💡 The app connects you to verified peer support communities and a "helper auntie" — trained women who've been through the same.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="faq-item" data-category="miscarriage" data-keywords="recurrent miscarriage repeated 3 times risk test">
+      <button class="faq-question" onclick="toggleFAQ(this)">
+        <span class="faq-q-icon" style="--q-bg:#fff1f2;">🔁</span>
+        <span class="faq-q-text">What causes recurrent miscarriage?</span>
+        <span class="faq-chevron">▼</span>
+      </button>
+      <div class="faq-answer">
+        <div class="faq-answer-inner">
+          Losing 3 or more pregnancies in a row needs investigation — possible causes include chromosomal issues, hormonal imbalance, uterine shape, or blood clotting disorders. Testing is important.
+          <div class="answer-highlight">💡 The app calculates a risk score based on your history and guides you on what tests to ask your doctor for.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ───────────── MENOPAUSE & CANCER ───────────── -->
+    <div class="faq-section-label" data-section="menopause">🌡️ Menopause & Breast / Cancer Awareness</div>
+
+    <div class="faq-item" data-category="menopause" data-keywords="hot flashes night sweat menopause body temperature">
+      <button class="faq-question" onclick="toggleFAQ(this)">
+        <span class="faq-q-icon" style="--q-bg:#fff7ed;">🌡️</span>
+        <span class="faq-q-text">Why do hot flashes happen during menopause?</span>
+        <span class="faq-chevron">▼</span>
+      </button>
+      <div class="faq-answer">
+        <div class="faq-answer-inner">
+          Falling estrogen levels confuse your brain's temperature control. Your body suddenly thinks it's overheating, causing a wave of heat — especially at night. Very common and manageable.
+          <div class="answer-highlight">💡 The app predicts when hot flashes are likely and reminds you to keep your room cool and wear breathable fabric.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="faq-item" data-category="menopause" data-keywords="breast pain cancer lump check period">
+      <button class="faq-question" onclick="toggleFAQ(this)">
+        <span class="faq-q-icon" style="--q-bg:#fff1f2;">🎗️</span>
+        <span class="faq-q-text">Can breast pain during periods become cancer?</span>
+        <span class="faq-chevron">▼</span>
+      </button>
+      <div class="faq-answer">
+        <div class="faq-answer-inner">
+          Period-related breast tenderness is hormonal and completely normal — it usually goes away after your period ends. A hard lump that doesn't move, or pain that doesn't follow your cycle, should be checked by a doctor.
+          <div class="answer-highlight">💡 The app sends a monthly reminder to do a quick self-breast check at home.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="faq-item" data-category="menopause" data-keywords="breast check exam when pain lump">
+      <button class="faq-question" onclick="toggleFAQ(this)">
+        <span class="faq-q-icon" style="--q-bg:#f0fdf4;">🩺</span>
+        <span class="faq-q-text">When should I get a breast exam?</span>
+        <span class="faq-chevron">▼</span>
+      </button>
+      <div class="faq-answer">
+        <div class="faq-answer-inner">
+          If you notice pain that persists beyond your period, a lump, skin dimpling, nipple discharge, or any change in shape — get a clinical exam immediately. Don't wait.
+          <div class="answer-highlight">💡 If your pain stays beyond 5 days after your period ends, the app flags it and prompts you to book an exam.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="faq-item" data-category="menopause" data-keywords="cervical screening pap smear irregular cycle flags">
+      <button class="faq-question" onclick="toggleFAQ(this)">
+        <span class="faq-q-icon" style="--q-bg:#fdf4ff;">🔬</span>
+        <span class="faq-q-text">When does irregular cycle flag cervical screening?</span>
+        <span class="faq-chevron">▼</span>
+      </button>
+      <div class="faq-answer">
+        <div class="faq-answer-inner">
+          Persistent irregular cycles combined with unusual discharge, pain during intercourse, or bleeding between periods can be warning signs for cervical issues. Pap smears are recommended every 3 years after age 21.
+          <div class="answer-highlight">💡 The app detects this pattern and helps you book a clinic appointment directly.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ───────────── FERTILITY & POSTPARTUM ───────────── -->
+    <div class="faq-section-label" data-section="fertility">🌸 Fertility & Postpartum</div>
+
+    <div class="faq-item" data-category="fertility" data-keywords="ovulation tracking fertile days green baby">
+      <button class="faq-question" onclick="toggleFAQ(this)">
+        <span class="faq-q-icon" style="--q-bg:#fdf4ff;">🌸</span>
+        <span class="faq-q-text">How does ovulation tracking work?</span>
+        <span class="faq-chevron">▼</span>
+      </button>
+      <div class="faq-answer">
+        <div class="faq-answer-inner">
+          Ovulation is the window each month when you're most likely to get pregnant — usually around day 14 of a 28-day cycle. Tracking cervical mucus, basal temperature, and cycle patterns can predict it.
+          <div class="answer-highlight">💡 The app highlights your fertile days in green so you can plan accordingly — whether you're trying to conceive or avoid it.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="faq-item" data-category="fertility" data-keywords="postpartum depression crying no sleep mood baby">
+      <button class="faq-question" onclick="toggleFAQ(this)">
+        <span class="faq-q-icon" style="--q-bg:#eff6ff;">💙</span>
+        <span class="faq-q-text">What is postpartum depression?</span>
+        <span class="faq-chevron">▼</span>
+      </button>
+      <div class="faq-answer">
+        <div class="faq-answer-inner">
+          It's more than "baby blues." PPD involves persistent sadness, crying, exhaustion, anxiety, or feeling disconnected from your baby — affecting 1 in 5 new mothers. It's a medical condition, not a weakness.
+          <div class="answer-highlight">💡 The app has a simple mood test after delivery and connects you to professional help if needed.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="faq-item" data-category="fertility" data-keywords="postpartum bleeding 6 weeks normal counter doctor">
+      <button class="faq-question" onclick="toggleFAQ(this)">
+        <span class="faq-q-icon" style="--q-bg:#fff1f2;">🩸</span>
+        <span class="faq-q-text">How long does postpartum bleeding last?</span>
+        <span class="faq-chevron">▼</span>
+      </button>
+      <div class="faq-answer">
+        <div class="faq-answer-inner">
+          Postpartum bleeding (lochia) is normal for up to 6 weeks after delivery. It starts heavy and red, then lightens to pink and finally yellow-white. Bright red heavy bleeding after week 2 needs a doctor.
+          <div class="answer-highlight">💡 The app has a postpartum counter — it tracks the days and tells you exactly when to see a doctor.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ───────────── APP FEATURES ───────────── -->
+    <div class="faq-section-label" data-section="app">📱 App Features & Wellness</div>
+
+    <div class="faq-item" data-category="app" data-keywords="app predict AI patterns wearable log problems">
+      <button class="faq-question" onclick="toggleFAQ(this)">
+        <span class="faq-q-icon" style="--q-bg:#f0fdf4;">🤖</span>
+        <span class="faq-q-text">How does the app predict health problems?</span>
+        <span class="faq-chevron">▼</span>
+      </button>
+      <div class="faq-answer">
+        <div class="faq-answer-inner">
+          The AI looks for patterns across your symptom logs, cycle data, sleep scores, and wearable readings. It compares your data over time and flags when something doesn't look right — before you'd notice it yourself.
+          <div class="answer-highlight">💡 The more you log, the smarter it gets. Even 2 minutes of daily input makes a big difference in prediction accuracy.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="faq-item" data-category="app" data-keywords="wearable setup watch phone sync Hindi guide">
+      <button class="faq-question" onclick="toggleFAQ(this)">
+        <span class="faq-q-icon" style="--q-bg:#fffbeb;">⌚</span>
+        <span class="faq-q-text">How do I set up my wearable with the app?</span>
+        <span class="faq-chevron">▼</span>
+      </button>
+      <div class="faq-answer">
+        <div class="faq-answer-inner">
+          It's designed to be simple. Connect your phone and smartwatch with one tap. Everything syncs automatically — no technical knowledge needed.
+          <div class="answer-highlight">💡 There's a full setup guide in Hindi (and other regional languages) with visuals at every step.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="faq-item" data-category="app" data-keywords="rural village doctor tele video call 24 7">
+      <button class="faq-question" onclick="toggleFAQ(this)">
+        <span class="faq-q-icon" style="--q-bg:#fdf4ff;">🏥</span>
+        <span class="faq-q-text">Can women in villages access a doctor through the app?</span>
+        <span class="faq-chevron">▼</span>
+      </button>
+      <div class="faq-answer">
+        <div class="faq-answer-inner">
+          Yes — this is one of the most important things Herlytics does. Women in rural areas without nearby hospitals can connect to a doctor via video call anytime, day or night.
+          <div class="answer-highlight">💡 The tele-doctor feature works 24/7 and is designed for low-bandwidth connections common in rural India.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="faq-item" data-category="app" data-keywords="wellness tips daily walk eat breathe one tap">
+      <button class="faq-question" onclick="toggleFAQ(this)">
+        <span class="faq-q-icon" style="--q-bg:#ecfdf5;">✨</span>
+        <span class="faq-q-text">What daily wellness tips does the app give?</span>
+        <span class="faq-chevron">▼</span>
+      </button>
+      <div class="faq-answer">
+        <div class="faq-answer-inner">
+          Small, actionable tips based on where you are in your cycle — a short walk, a specific food, a breathing exercise, or a hydration reminder. Nothing overwhelming.
+          <div class="answer-highlight">💡 One-tap access — see today's tip on your home screen without even opening the app fully.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- No results message -->
+    <div class="faq-no-results" id="noResults">
+      <div class="no-icon">🔍</div>
+      <h3>No questions found</h3>
+      <p>Try searching with different words like "cramps", "PCOS", "baby", or "bleeding".</p>
+    </div>
+
+  </div>
+
+  <!-- CTA -->
+  <div class="faq-cta">
+    <div class="faq-cta-inner">
+      <h3>Still have questions?</h3>
+      <p>Talk to the Herlytics AI — ask anything about your health in Hindi or English.</p>
+      <a href="/" class="faq-cta-btn">Ask Herlytics →</a>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // ── Toggle accordion ──
+  function toggleFAQ(btn) {
+    const item = btn.closest('.faq-item');
+    const answer = item.querySelector('.faq-answer');
+    const isOpen = item.classList.contains('faq-open');
+
+    // Close all
+    document.querySelectorAll('.faq-item.faq-open').forEach(i => {
+      i.classList.remove('faq-open');
+      i.querySelector('.faq-answer').style.maxHeight = '0';
+    });
+
+    // Open clicked (if it wasn't open)
+    if (!isOpen) {
+      item.classList.add('faq-open');
+      answer.style.maxHeight = answer.scrollHeight + 'px';
+    }
+  }
+
+  // ── Category filter ──
+  function filterFAQ(category, btn) {
+    document.querySelectorAll('.faq-filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    // Clear search
+    document.getElementById('faqSearch').value = '';
+
+    const items = document.querySelectorAll('.faq-item');
+    const labels = document.querySelectorAll('.faq-section-label');
+
+    items.forEach(item => {
+      if (category === 'all' || item.dataset.category === category) {
+        item.classList.remove('faq-hidden');
+      } else {
+        item.classList.add('faq-hidden');
+        item.classList.remove('faq-open');
+        item.querySelector('.faq-answer').style.maxHeight = '0';
+      }
+    });
+
+    labels.forEach(label => {
+      label.style.display = (category === 'all' || label.dataset.section === category) ? '' : 'none';
+    });
+
+    document.getElementById('noResults').classList.remove('visible');
+  }
+
+  // ── Search ──
+  function searchFAQ(query) {
+    const q = query.toLowerCase().trim();
+    const items = document.querySelectorAll('.faq-item');
+    const labels = document.querySelectorAll('.faq-section-label');
+
+    // Reset filter buttons
+    document.querySelectorAll('.faq-filter-btn').forEach(b => b.classList.remove('active'));
+    document.querySelector('.faq-filter-btn').classList.add('active');
+
+    let visibleCount = 0;
+
+    items.forEach(item => {
+      const keywords = (item.dataset.keywords || '').toLowerCase();
+      const questionText = item.querySelector('.faq-q-text').textContent.toLowerCase();
+      const answerText = item.querySelector('.faq-answer-inner').textContent.toLowerCase();
+
+      const match = !q || keywords.includes(q) || questionText.includes(q) || answerText.includes(q);
+
+      if (match) {
+        item.classList.remove('faq-hidden');
+        visibleCount++;
+      } else {
+        item.classList.add('faq-hidden');
+        item.classList.remove('faq-open');
+        item.querySelector('.faq-answer').style.maxHeight = '0';
+      }
+    });
+
+    // Hide all section labels when searching
+    labels.forEach(label => {
+      label.style.display = q ? 'none' : '';
+    });
+
+    document.getElementById('noResults').classList.toggle('visible', visibleCount === 0);
+  }
+</script>
+
+<%- include('partials/footer') %>

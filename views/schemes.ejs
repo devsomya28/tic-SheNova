@@ -1,0 +1,600 @@
+<%- include('partials/header') %>
+<%- include('partials/navbar') %>
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+  .schemes-page {
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    padding-bottom: 60px;
+  }
+
+  /* ── Hero Banner ── */
+  .schemes-hero {
+    background: linear-gradient(135deg, #1a0a2e 0%, #2d1155 40%, #6b21a8 100%);
+    padding: 56px 24px 48px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .schemes-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 20% 50%, rgba(236,72,153,0.18) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 30%, rgba(168,85,247,0.22) 0%, transparent 55%);
+    pointer-events: none;
+  }
+
+  .hero-tag {
+    display: inline-block;
+    background: rgba(236,72,153,0.2);
+    border: 1px solid rgba(236,72,153,0.4);
+    color: #f9a8d4;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 5px 16px;
+    border-radius: 20px;
+    margin-bottom: 18px;
+  }
+
+  .schemes-hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(28px, 5vw, 46px);
+    font-weight: 700;
+    color: #fff;
+    margin: 0 0 14px;
+    line-height: 1.2;
+  }
+
+  .schemes-hero h1 span {
+    color: #f472b6;
+  }
+
+  .schemes-hero p {
+    color: #d8b4fe;
+    font-size: 15px;
+    max-width: 520px;
+    margin: 0 auto;
+    line-height: 1.7;
+    font-weight: 300;
+  }
+
+  .hero-stats {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    margin-top: 32px;
+    flex-wrap: wrap;
+  }
+
+  .hero-stat {
+    text-align: center;
+  }
+
+  .hero-stat strong {
+    display: block;
+    font-size: 24px;
+    font-weight: 700;
+    color: #f472b6;
+    font-family: 'Playfair Display', serif;
+  }
+
+  .hero-stat span {
+    font-size: 11px;
+    color: #c4b5fd;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  /* ── Filter Tabs ── */
+  .filter-bar {
+    display: flex;
+    gap: 10px;
+    padding: 28px 24px 0;
+    max-width: 1100px;
+    margin: 0 auto;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .filter-btn {
+    padding: 8px 20px;
+    border-radius: 24px;
+    border: 1.5px solid #e2e8f0;
+    background: white;
+    color: #64748b;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .filter-btn:hover {
+    border-color: #ec4899;
+    color: #ec4899;
+  }
+
+  .filter-btn.active {
+    background: linear-gradient(135deg, #ec4899, #a855f7);
+    border-color: transparent;
+    color: white;
+    box-shadow: 0 4px 14px rgba(236,72,153,0.3);
+  }
+
+  /* ── Schemes Grid ── */
+  .schemes-container {
+    max-width: 1100px;
+    margin: 28px auto 0;
+    padding: 0 24px;
+  }
+
+  .schemes-section-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: #94a3b8;
+    margin-bottom: 16px;
+    margin-top: 36px;
+    padding-left: 4px;
+  }
+
+  .schemes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+    gap: 20px;
+  }
+
+  /* ── Scheme Card ── */
+  .scheme-card {
+    background: white;
+    border-radius: 18px;
+    border: 1.5px solid #f1f5f9;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    transition: all 0.25s ease;
+    position: relative;
+    overflow: hidden;
+    animation: fadeSlideUp 0.4s ease both;
+  }
+
+  .scheme-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--card-accent, linear-gradient(90deg, #ec4899, #a855f7));
+    border-radius: 18px 18px 0 0;
+  }
+
+  .scheme-card:hover {
+    border-color: #e879f9;
+    box-shadow: 0 12px 32px rgba(168,85,247,0.12);
+    transform: translateY(-3px);
+  }
+
+  @keyframes fadeSlideUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .scheme-card:nth-child(1) { animation-delay: 0.05s; }
+  .scheme-card:nth-child(2) { animation-delay: 0.10s; }
+  .scheme-card:nth-child(3) { animation-delay: 0.15s; }
+  .scheme-card:nth-child(4) { animation-delay: 0.20s; }
+  .scheme-card:nth-child(5) { animation-delay: 0.25s; }
+  .scheme-card:nth-child(6) { animation-delay: 0.30s; }
+
+  .scheme-top {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+  }
+
+  .scheme-icon {
+    font-size: 28px;
+    flex-shrink: 0;
+    width: 52px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--icon-bg, #fdf4ff);
+    border-radius: 14px;
+  }
+
+  .scheme-meta {
+    flex: 1;
+  }
+
+  .scheme-category-tag {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--tag-color, #a855f7);
+    margin-bottom: 4px;
+  }
+
+  .scheme-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: #1e293b;
+    line-height: 1.3;
+    margin: 0;
+    font-family: 'Playfair Display', serif;
+  }
+
+  .scheme-body {
+    font-size: 13.5px;
+    color: #64748b;
+    line-height: 1.65;
+  }
+
+  .scheme-benefit {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #f8fafc;
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 13px;
+    color: #334155;
+    font-weight: 500;
+  }
+
+  .scheme-benefit-icon {
+    font-size: 16px;
+  }
+
+  .scheme-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 4px;
+  }
+
+  .scheme-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: linear-gradient(135deg, #ec4899, #a855f7);
+    color: white;
+    text-decoration: none;
+    font-size: 12.5px;
+    font-weight: 600;
+    padding: 8px 18px;
+    border-radius: 24px;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 12px rgba(236,72,153,0.25);
+  }
+
+  .scheme-link:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgba(236,72,153,0.35);
+    color: white;
+    text-decoration: none;
+  }
+
+  .scheme-link svg {
+    width: 13px;
+    height: 13px;
+  }
+
+  .scheme-ministry {
+    font-size: 11px;
+    color: #94a3b8;
+  }
+
+  /* Helpline card special style */
+  .helpline-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 14px;
+    margin-top: 4px;
+  }
+
+  .helpline-item {
+    background: linear-gradient(135deg, #fdf4ff, #fce7f3);
+    border: 1.5px solid #f5d0fe;
+    border-radius: 14px;
+    padding: 16px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .helpline-number {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: #9333ea;
+  }
+
+  .helpline-label {
+    font-size: 12px;
+    color: #6b7280;
+    font-weight: 500;
+  }
+
+  .helpline-call {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: 4px;
+    color: #ec4899;
+    font-size: 12px;
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  /* Bottom notice */
+  .disclaimer {
+    max-width: 1100px;
+    margin: 40px auto 0;
+    padding: 0 24px;
+    text-align: center;
+    font-size: 12px;
+    color: #94a3b8;
+    line-height: 1.7;
+  }
+
+  /* Hidden for filtering */
+  .scheme-card.hidden {
+    display: none;
+  }
+
+  @media (max-width: 600px) {
+    .schemes-hero { padding: 40px 16px 36px; }
+    .hero-stats { gap: 20px; }
+    .filter-bar { gap: 8px; }
+    .filter-btn { font-size: 12px; padding: 7px 14px; }
+  }
+</style>
+
+<div class="schemes-page">
+
+  <!-- Hero -->
+  <div class="schemes-hero">
+    <div class="hero-tag">Government of India</div>
+    <h1>Schemes for <span>Women's Health</span><br>& Welfare</h1>
+    <p>Every woman in India deserves access to free healthcare, financial support, and legal protection. Here are the official schemes you can claim.</p>
+    <div class="hero-stats">
+      <div class="hero-stat"><strong>6+</strong><span>Active Schemes</span></div>
+      <div class="hero-stat"><strong>₹5L</strong><span>Max Health Cover</span></div>
+      <div class="hero-stat"><strong>Free</strong><span>For Eligible Women</span></div>
+    </div>
+  </div>
+
+  <!-- Filter tabs -->
+  <div class="filter-bar">
+    <button class="filter-btn active" onclick="filterSchemes('all', this)">All Schemes</button>
+    <button class="filter-btn" onclick="filterSchemes('health', this)">🩺 Health</button>
+    <button class="filter-btn" onclick="filterSchemes('maternal', this)">🤱 Maternal</button>
+    <button class="filter-btn" onclick="filterSchemes('financial', this)">💰 Financial Aid</button>
+    <button class="filter-btn" onclick="filterSchemes('helpline', this)">📞 Helplines</button>
+  </div>
+
+  <div class="schemes-container">
+
+    <div class="schemes-section-label">Health Coverage</div>
+    <div class="schemes-grid">
+
+      <!-- 1. PMJAY -->
+      <div class="scheme-card" data-category="health" style="--card-accent: linear-gradient(90deg,#ec4899,#a855f7); --icon-bg:#fdf4ff; --tag-color:#a855f7;">
+        <div class="scheme-top">
+          <div class="scheme-icon">🏥</div>
+          <div class="scheme-meta">
+            <div class="scheme-category-tag">Health</div>
+            <h3 class="scheme-name">Ayushman Bharat — PMJAY</h3>
+          </div>
+        </div>
+        <p class="scheme-body">India's largest health insurance scheme. Provides free secondary and tertiary care hospitalization to 10 crore+ poor families, including all women.</p>
+        <div class="scheme-benefit"><span class="scheme-benefit-icon">💡</span> Free hospital coverage up to ₹5 lakh per year per family</div>
+        <div class="scheme-footer">
+          <span class="scheme-ministry">Ministry of Health</span>
+          <a href="https://pmjay.gov.in" target="_blank" rel="noopener" class="scheme-link">
+            Visit Official Site
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg>
+          </a>
+        </div>
+      </div>
+
+
+    </div>
+
+    <div class="schemes-section-label">Maternal & Reproductive Health</div>
+    <div class="schemes-grid">
+
+      <!-- 3. JSY -->
+      <div class="scheme-card" data-category="maternal" style="--card-accent: linear-gradient(90deg,#f43f5e,#ec4899); --icon-bg:#fff1f2; --tag-color:#f43f5e;">
+        <div class="scheme-top">
+          <div class="scheme-icon">🤱</div>
+          <div class="scheme-meta">
+            <div class="scheme-category-tag">Maternal</div>
+            <h3 class="scheme-name">Janani Suraksha Yojana (JSY)</h3>
+          </div>
+        </div>
+        <p class="scheme-body">Cash assistance to pregnant women below the poverty line to deliver babies at government hospitals, promoting safe institutional delivery.</p>
+        <div class="scheme-benefit"><span class="scheme-benefit-icon">💡</span> ₹1,400 (rural) / ₹1,000 (urban) cash incentive per delivery</div>
+        <div class="scheme-footer">
+          <span class="scheme-ministry">NHM, Ministry of Health</span>
+          <a href="https://nhm.gov.in/index1.php?lang=1&level=3&sublinkid=841&lid=309" target="_blank" rel="noopener" class="scheme-link">
+            Visit Official Site
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- 4. PMMVY -->
+      <div class="scheme-card" data-category="maternal" style="--card-accent: linear-gradient(90deg,#f59e0b,#f97316); --icon-bg:#fffbeb; --tag-color:#f59e0b;">
+        <div class="scheme-top">
+          <div class="scheme-icon">👶</div>
+          <div class="scheme-meta">
+            <div class="scheme-category-tag">Maternal</div>
+            <h3 class="scheme-name">PM Matru Vandana Yojana (PMMVY)</h3>
+          </div>
+        </div>
+        <p class="scheme-body">Maternity benefit for pregnant and lactating mothers. Compensates for wage loss, promotes proper nutrition and health-seeking behaviour.</p>
+        <div class="scheme-benefit"><span class="scheme-benefit-icon">💡</span> ₹5,000 cash transfer in 3 instalments for first live birth</div>
+        <div class="scheme-footer">
+          <span class="scheme-ministry">WCD Ministry</span>
+          <a href="https://pmmvy.wcd.gov.in" target="_blank" rel="noopener" class="scheme-link">
+            Visit Official Site
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- 5. JSSK -->
+      <div class="scheme-card" data-category="maternal" style="--card-accent: linear-gradient(90deg,#10b981,#06b6d4); --icon-bg:#ecfdf5; --tag-color:#10b981;">
+        <div class="scheme-top">
+          <div class="scheme-icon">🏨</div>
+          <div class="scheme-meta">
+            <div class="scheme-category-tag">Maternal</div>
+            <h3 class="scheme-name">Janani Shishu Suraksha Karyakram</h3>
+          </div>
+        </div>
+        <p class="scheme-body">Entitles all pregnant women delivering in government facilities to completely free and no-expense delivery, including C-sections.</p>
+        <div class="scheme-benefit"><span class="scheme-benefit-icon">💡</span> Free delivery, medicines, diagnostics, diet & blood transfusion</div>
+        <div class="scheme-footer">
+          <span class="scheme-ministry">Ministry of Health</span>
+          <a href="https://nhm.gov.in/index1.php?lang=1&level=3&sublinkid=842&lid=309" target="_blank" rel="noopener" class="scheme-link">
+            Visit Official Site
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg>
+          </a>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="schemes-section-label">Financial Aid & Empowerment</div>
+    <div class="schemes-grid">
+
+      <!-- 6. Ujjwala -->
+      <div class="scheme-card" data-category="financial" style="--card-accent: linear-gradient(90deg,#f97316,#eab308); --icon-bg:#fff7ed; --tag-color:#f97316;">
+        <div class="scheme-top">
+          <div class="scheme-icon">🔥</div>
+          <div class="scheme-meta">
+            <div class="scheme-category-tag">Financial Aid</div>
+            <h3 class="scheme-name">PM Ujjwala Yojana</h3>
+          </div>
+        </div>
+        <p class="scheme-body">Free LPG connections to women of BPL households, protecting them from indoor air pollution caused by wood-fired cooking.</p>
+        <div class="scheme-benefit"><span class="scheme-benefit-icon">💡</span> Free LPG connection + first cylinder refill free</div>
+        <div class="scheme-footer">
+          <span class="scheme-ministry">Ministry of Petroleum</span>
+          <a href="https://www.pmuy.gov.in" target="_blank" rel="noopener" class="scheme-link">
+            Visit Official Site
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- 7. Sukanya Samriddhi -->
+      <div class="scheme-card" data-category="financial" style="--card-accent: linear-gradient(90deg,#8b5cf6,#a855f7); --icon-bg:#faf5ff; --tag-color:#8b5cf6;">
+        <div class="scheme-top">
+          <div class="scheme-icon">🌸</div>
+          <div class="scheme-meta">
+            <div class="scheme-category-tag">Financial Aid</div>
+            <h3 class="scheme-name">Sukanya Samriddhi Yojana</h3>
+          </div>
+        </div>
+        <p class="scheme-body">Small savings scheme for a girl child's future — education and marriage expenses. High interest rate, tax-free maturity.</p>
+        <div class="scheme-benefit"><span class="scheme-benefit-icon">💡</span> 8.2% interest rate, fully tax exempt under Section 80C</div>
+        <div class="scheme-footer">
+          <span class="scheme-ministry">Ministry of Finance</span>
+          <a href="https://www.indiapost.gov.in/Financial/Pages/Content/Sukanya-Samridhi-Account.aspx" target="_blank" rel="noopener" class="scheme-link">
+            Visit Official Site
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg>
+          </a>
+        </div>
+      </div>
+
+
+    </div>
+
+    <!-- Helplines Section -->
+    <div class="schemes-section-label">Emergency Helplines</div>
+    <div class="scheme-card" data-category="helpline" style="--card-accent: linear-gradient(90deg,#0ea5e9,#6366f1); border-radius:18px; padding:24px;">
+      <p style="font-size:13px; color:#64748b; margin:0 0 16px;">Call these free government helplines anytime — available in Hindi, English and regional languages.</p>
+      <div class="helpline-grid">
+        <div class="helpline-item">
+          <div class="helpline-number">181</div>
+          <div class="helpline-label">Women Helpline (National)</div>
+          <a href="tel:181" class="helpline-call">📞 Call Now</a>
+        </div>
+        <div class="helpline-item">
+          <div class="helpline-number">1091</div>
+          <div class="helpline-label">Women in Distress</div>
+          <a href="tel:1091" class="helpline-call">📞 Call Now</a>
+        </div>
+        <div class="helpline-item">
+          <div class="helpline-number">104</div>
+          <div class="helpline-label">Health Helpline — Free Medical Advice</div>
+          <a href="tel:104" class="helpline-call">📞 Call Now</a>
+        </div>
+        <div class="helpline-item">
+          <div class="helpline-number">112</div>
+          <div class="helpline-label">Emergency Response (Police / Ambulance)</div>
+          <a href="tel:112" class="helpline-call">📞 Call Now</a>
+        </div>
+        <div class="helpline-item">
+          <div class="helpline-number">1098</div>
+          <div class="helpline-label">Childline — Girls in crisis</div>
+          <a href="tel:1098" class="helpline-call">📞 Call Now</a>
+        </div>
+        <div class="helpline-item">
+          <div class="helpline-number">7827170170</div>
+          <div class="helpline-label">iCall — Mental Health Support</div>
+          <a href="tel:7827170170" class="helpline-call">📞 Call Now</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <p class="disclaimer">
+    All scheme information is sourced from official Government of India portals.<br>
+    Eligibility criteria may vary. Visit the official site for most up-to-date details.
+  </p>
+
+</div>
+
+<script>
+  function filterSchemes(category, btn) {
+    // Update active button
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    // Show/hide cards
+    document.querySelectorAll('.scheme-card').forEach(card => {
+      if (category === 'all') {
+        card.classList.remove('hidden');
+      } else {
+        const match = card.dataset.category === category;
+        card.classList.toggle('hidden', !match);
+      }
+    });
+
+    // Show/hide section labels
+    document.querySelectorAll('.schemes-section-label').forEach(label => {
+      if (category === 'all') {
+        label.style.display = '';
+      } else {
+        label.style.display = 'none';
+      }
+    });
+  }
+</script>
+
+<%- include('partials/footer') %>
