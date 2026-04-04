@@ -1,0 +1,77 @@
+<%- include('../partials/header') %>
+<%- include('../partials/navbar') %>
+
+<div class="page-container">
+
+  <div class="page-hero">
+    <div>
+      <h2>💉 Available Blood Donors</h2>
+      <p>Browse registered donors and accept the one you need.</p>
+    </div>
+  </div>
+
+  <% if (success) { %>
+    <div class="alert" style="background:#e8f5ee;color:#276749;border:1px solid #b2dfdb;padding:14px 18px;border-radius:10px;margin-bottom:20px;">
+      ✅ <%= success %>
+    </div>
+  <% } %>
+
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px;">
+    <div style="font-size:14px;color:#888;">
+      <strong><%= donors.length %></strong> donor<%= donors.length !== 1 ? 's' : '' %> available
+    </div>
+    <a href="/blood/donate" class="btn-primary" style="background:#c0392b;font-size:13px;">
+      🩸 Register as Donor
+    </a>
+  </div>
+
+  <% if (donors.length === 0) { %>
+    <div class="card" style="text-align:center;padding:48px 24px;">
+      <div style="font-size:48px;margin-bottom:16px;">🩸</div>
+      <div style="font-size:18px;font-weight:700;margin-bottom:8px;">No donors available right now</div>
+      <p style="color:#888;">Be the first to register as a donor and help someone in need.</p>
+      <a href="/blood/donate" class="btn-primary" style="background:#c0392b;margin-top:16px;display:inline-block;">
+        Register as Donor →
+      </a>
+    </div>
+  <% } else { %>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px;">
+      <% donors.forEach(donor => { %>
+        <div class="card" style="border-top:4px solid #c0392b;position:relative;" id="donor-<%= donor._id %>">
+
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;">
+            <div>
+              <div style="font-size:22px;font-weight:800;color:#c0392b;"><%= donor.bloodGroup %></div>
+              <div style="font-size:16px;font-weight:700;margin-top:2px;"><%= donor.name %></div>
+            </div>
+            <div style="background:#fff0f0;color:#c0392b;padding:6px 12px;border-radius:20px;font-size:13px;font-weight:700;">
+              <%= donor.units %> unit<%= donor.units > 1 ? 's' : '' %>
+            </div>
+          </div>
+
+          <div style="font-size:13px;color:#555;line-height:1.9;">
+            <div>🎂 Age: <strong><%= donor.age %></strong></div>
+            <div>📍 <%= donor.city %></div>
+            <div>🏠 <%= donor.address %></div>
+            <div>📞 <%= donor.contact %></div>
+            <div style="color:#aaa;font-size:11px;margin-top:6px;">
+              Registered <%= new Date(donor.createdAt).toLocaleDateString('en-IN', {day:'numeric',month:'short',year:'numeric'}) %>
+            </div>
+          </div>
+
+          <form action="/blood/accept/<%= donor._id %>" method="POST" style="margin-top:16px;">
+            <button type="submit" class="btn-primary"
+              style="width:100%;background:#27ae60;font-size:14px;"
+              onclick="return confirm('Accept blood from <%= donor.name %>? This will remove them from the available list.')">
+              ✅ Accept
+            </button>
+          </form>
+
+        </div>
+      <% }) %>
+    </div>
+  <% } %>
+
+</div>
+
+<%- include('../partials/footer') %>

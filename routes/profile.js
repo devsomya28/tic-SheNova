@@ -18,13 +18,14 @@ router.get('/', requireLogin, async (req, res) => {
 router.post('/update', requireLogin, async (req, res) => {
   try {
     const { name, age, city } = req.body;
-    await User.findByIdAndUpdate(req.session.user.id, { name, age: parseInt(age), city });
+    await User.findByIdAndUpdate(req.session.user.id, { name, age: parseInt(age) || null, city });
     req.session.user.name = name;
     const user = await User.findById(req.session.user.id);
     res.render('profile', { user, success: 'Profile updated successfully!', error: null });
   } catch (err) {
+    console.log('PROFILE UPDATE ERROR:', err.message); // ← add this
     const user = await User.findById(req.session.user.id);
-    res.render('profile', { user, success: null, error: 'Update failed. Try again.' });
+    res.render('profile', { user, success: null, error: err.message }); // ← show real error
   }
 });
 

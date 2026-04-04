@@ -1,0 +1,87 @@
+<%- include('../partials/header') %>
+<%- include('../partials/navbar') %>
+
+<div class="page-container">
+
+  <div class="page-hero">
+    <div>
+      <h2>🩸 Donate Blood</h2>
+      <p>Register as a blood donor and help someone in need.</p>
+    </div>
+  </div>
+
+  <% if (success) { %>
+    <div class="alert" style="background:#e8f5ee;color:#276749;border:1px solid #b2dfdb;padding:14px 18px;border-radius:10px;margin-bottom:20px;">
+      ✅ <%= success %>
+    </div>
+  <% } %>
+  <% if (error) { %>
+    <div class="alert" style="background:#fff0f0;color:#c0392b;border:1px solid #f5b7b1;padding:14px 18px;border-radius:10px;margin-bottom:20px;">
+      ⚠️ <%= error %>
+    </div>
+  <% } %>
+
+  <div class="card">
+    <div class="card-title">Donor Registration</div>
+    <div class="card-sub">Fill in your details to register as a blood donor</div>
+
+    <form action="/blood/donate" method="POST">
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Full Name</label>
+          <input type="text" name="name" required placeholder="e.g. Priya Sharma" />
+        </div>
+        <div class="form-group">
+          <label>Age</label>
+          <input type="number" name="age" min="18" max="65" required placeholder="e.g. 24" />
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Blood Group</label>
+          <select name="bloodGroup" required>
+            <option value="" disabled selected>Select blood group</option>
+            <% ['A+','A-','B+','B-','AB+','AB-','O+','O-'].forEach(bg => { %>
+              <option value="<%= bg %>"><%= bg %></option>
+            <% }) %>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Units Available</label>
+          <input type="number" name="units" min="1" max="5" value="1" required />
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>City</label>
+          <input type="text" name="city" required placeholder="e.g. Bhopal" />
+        </div>
+        <div class="form-group">
+          <label>Contact Number</label>
+          <input type="tel" name="contact" required placeholder="e.g. 9876543210" />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Full Address</label>
+        <textarea name="address" required rows="3"
+          placeholder="House no., street, area, city..."
+          style="width:100%;padding:10px 14px;border:1.5px solid #e0e0e0;border-radius:10px;font-size:14px;resize:vertical;"></textarea>
+      </div>
+
+      <button type="submit" class="btn-primary" style="background:#c0392b;">
+        🩸 Register as Donor
+      </button>
+      <a href="/blood/accept" class="btn-secondary" style="margin-left:12px;">
+        View Available Blood →
+      </a>
+
+    </form>
+  </div>
+
+</div>
+
+<%- include('../partials/footer') %>

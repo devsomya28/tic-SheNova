@@ -4,18 +4,14 @@ const User = require('../models/User');
 const CycleLog = require('../models/CycleLog');
 const { getCycleStats } = require('../controllers/cycleEngine');
 const { calculateRisk } = require('../controllers/riskEngine');
-const {
-  getPopulationStats,
-  getSymptomFrequency,
-  getExerciseRecommendations,   // ← new
-} = require('../data/loadCycleData');
+const { getPopulationStats, getSymptomFrequency } = require('../data/loadCycleData');
 
 function requireLogin(req, res, next) {
   if (!req.session.user) return res.redirect('/login');
   next();
 }
 
-router.get('/', requireLogin, async (req, res) => {
+router.get('/report', requireLogin, async (req, res) => {
   const user = await User.findById(req.session.user.id);
   const logs = await CycleLog.find({ userId: user._id }).sort({ periodStartDate: -1 });
 
@@ -31,20 +27,11 @@ router.get('/', requireLogin, async (req, res) => {
     clots:      getSymptomFrequency('clots'),
   };
 
-  // ── NEW: get exercise recs from sleep dataset ──
-  const exerciseRecs = stats
-    ? getExerciseRecommendations(user, stats.phase.name)
-    : null;
-
-  res.render('insights', {
-    user,
-    stats,
-    logs,
-    risk,
-    populationStats,
-    symptomFreqs,
-    exerciseRecs,    // ← passed to view
+  const generatedOn = new Date().toLocaleDateString('en-IN', {
+    day: '2-digit', month: 'long', year: 'numeric'
   });
+
+  res.render('report', { user, stats, logs, risk, populationStats, symptomFreqs, generatedOn });
 });
 
 module.exports = router;

@@ -4,8 +4,9 @@ const mongoose = require('mongoose');
 const session  = require('express-session');
 const path     = require('path');
 
-// ── NEW: NHANES data loader ───────────────────────────────────────────────
+// ── Data loaders ──────────────────────────────────────────────────────────
 const { loadNHANES } = require('./data/loadNHANES');
+const { loadCycleData, loadSleepData, getDataset } = require('./data/loadCycleData');
 
 const app = express();
 
@@ -34,12 +35,11 @@ app.use((req, res, next) => {
   res.locals.user = req.session.user || null;
   next();
 });
-app.get('/schemes', (req, res) => {
-  res.render('schemes');
-});
-app.get('/faq', (req, res) => {
-  res.render('faq');
-});
+
+// Static pages
+app.get('/schemes', (req, res) => res.render('schemes'));
+app.get('/faq',     (req, res) => res.render('faq'));
+
 // Routes
 app.use('/',           require('./routes/auth'));
 app.use('/onboarding', require('./routes/onboarding'));
@@ -47,20 +47,19 @@ app.use('/dashboard',  require('./routes/dashboard'));
 app.use('/insights',   require('./routes/insights'));
 app.use('/doctor',     require('./routes/doctor'));
 app.use('/profile',    require('./routes/profile'));
-
-// ── NEW: PCOS assessment + diet route ────────────────────────────────────
-app.use('/pcos', require('./routes/pcos'));
-
-// Start server — load NHANES CSV first, then cycle dataset
-const { loadCycleData, getDataset } = require('./data/loadCycleData');
+app.use('/pcos',       require('./routes/pcos'));
+app.use('/',           require('./routes/report'));
+app.use('/blood', require('./routes/blood'));
+// Start server — load all datasets first, then listen
 const PORT = process.env.PORT || 3000;
 
-Promise.all([loadCycleData(), loadNHANES()])
+Promise.all([loadCycleData(), loadNHANES(), loadSleepData()])
   .then(() => {
+    console.log('✅ All datasets loaded');
     console.log('Cycle dataset row sample:', getDataset()[0]);
-    app.listen(PORT, () => console.log(`Herlytics running on http://localhost:${PORT}`));
+    app.listen(PORT, () => console.log(`🌸 Herlytics running on http://localhost:${PORT}`));
   })
   .catch(err => {
-    console.error('Failed to load datasets:', err);
+    console.error('❌ Failed to load datasets:', err);
     process.exit(1);
   });
